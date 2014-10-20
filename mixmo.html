@@ -1,0 +1,44 @@
+<head>
+  <title>mixmo</title>
+</head>
+
+<body>
+  <h1>Welcome to Meteor!</h1>
+
+  {{> entryfield}}
+
+  {{> players}}
+
+
+  <div id="game">
+      {{> playground}}
+    </div>
+</body>
+
+<template name="hello">
+  <button>Click Me</button>
+  <p>Shared counter  {{counter}} </p>
+  <p>Someone else pressed the button</p>
+  </template>
+
+<template name="entryfield">
+    <input type="text" id="name" placeholder="Login" /> 
+</template>
+
+<template name="players">
+    <p>
+        {{#each players}}
+            <strong>{{login}}</strong>
+        {{/each}}
+    </p>
+</template>
+
+<template name="playground">
+    <table>
+        {{#each rows}}
+        <tr>
+            <td>test</td><td>test</td>
+        </tr>
+        {{/each}}
+    </table>
+</template>
