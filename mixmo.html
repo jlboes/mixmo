@@ -28,7 +28,7 @@
 <template name="players">
     <p>
         {{#each players}}
-            <strong>{{login}}</strong>
+            <label class="playerList" id="{{_id}}"><strong>{{login}}</strong>    X</label>
         {{/each}}
     </p>
 </template>

@@ -21,6 +21,34 @@ if (Meteor.isClient) {
         return cols;
     }
 
+
+
+	// EVENTS
+
+    Template.entryfield.events = {
+	    "keydown #name": function(event){
+		    if(event.which == 13){
+                var name = document.getElementById('name');
+			    // Submit the form
+			    if(name.value != ''){
+				    Players.insert({
+					    login: name.value,
+					    time: Date.now()
+				    });
+
+			        name.value = '';
+				}
+			}
+		}
+	}
+
+    Template.players.events = ({
+        "click .playerList": function(event){
+            console.log("remove "+this._id);
+            Players.remove(this._id);
+        }
+    });
+
     Template.playground.events({
         'click td': function (event) { 
             console.log('clicked');
