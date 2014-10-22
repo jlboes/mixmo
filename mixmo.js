@@ -115,14 +115,45 @@ if (Meteor.isClient) {
             hoverTd.className = "active";
             console.log('clicked');
             
+
+        },
+        'mousedown table': function(){
+            
             // get potential grid size
             // CurrentWord size
+            var currentWordSize = CurrentWord.find().length;
             // biggest H word
+            var maxHword = 0;
             // biggest V word
-            // potential width
+            var maxVword = 0;
+            Words.find().forEach(function(wordObj){
+                if(wordObj.word.length>maxHword){
+                    maxHword = wordObj.word.length;
+                }
+            });
             // potential height
-
+            var table = document.getElementById('gridTable');
+            var row = table.insertRow(0);
+            for (var i = 0; i < maxHword; i++) {
+                var cell = row.insertCell(0);
+                cell.className="tmp";
+            }
+            console.debug(table.firstChild);
+        },
+        'mouseup table': function(){
+            console.log('---------------------------');  // https://developer.mozilla.org/fr/docs/Web/API/HTMLCollection
+            var table = document.getElementById('gridTable');
+            var tmps = document.getElementsByClassName('tmp');
+            console.debug(tmps);
+            var len = tmps.length;
+            for(var i = 0; i < len; i++) {
+                console.debug(tmps[i]);
+                if(tmps[i] != undefined){
+                    tmps[i].parentNode.removeChild(tmps[i]);
+                }
+            }
         }
+
 
     });
 }

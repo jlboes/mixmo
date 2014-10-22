@@ -1,6 +1,7 @@
 /* CSS declarations go here */
 
 td{
+    padding : 4px;
     background-color:lightgrey;
     border: solid 1px lightseagreen;
 }
