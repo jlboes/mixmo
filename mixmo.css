@@ -2,8 +2,9 @@
 
 td{
     background-color:lightgrey;
+    border: solid 1px lightseagreen;
 }
 
-td .active{
+td.active{
     background-color:lightblue;
 }

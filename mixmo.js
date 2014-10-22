@@ -101,9 +101,27 @@ if (Meteor.isClient) {
     });
 
     Template.playground.events({
-        'click td': function (event) { 
+        'mouseover td': function (event) { 
+            var wordToMove = document.getElementsByClassName('currentwordTds');
+            //this == object letter under cursor 
+            // disable color
+            var table = document.getElementById('gridTable');
+            var cells = table.getElementsByTagName("td"); 
+            for (var i = 0; i < cells.length; i++) { 
+                cells[i].className = ""; 
+            }
+            // add classe to selected td
+            var hoverTd = event.currentTarget;
+            hoverTd.className = "active";
             console.log('clicked');
-            console.debug(Rows.findOne({}, { sort: { index: -1 }}));
+            
+            // get potential grid size
+            // CurrentWord size
+            // biggest H word
+            // biggest V word
+            // potential width
+            // potential height
+
         }
 
     });

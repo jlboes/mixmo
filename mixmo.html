@@ -43,14 +43,15 @@
     <table>
         <tr id="currentwordTR">
             {{#each currentWord}}
-                <td>{{letter}}</td>
+                <td class="currentwordTds">{{letter}}</td>
             {{/each}}
         </tr>
     </table>
+    <br/>
 </template>
 
 <template name="playground">
-    <table>
+    <table id="gridTable">
         {{#each rows}}
         <tr>
             {{#each word}}
