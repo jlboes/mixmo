@@ -11,6 +11,8 @@
 
 
   <div id="game">
+      {{> wordInput}}
+      {{> currentWordTable}}
       {{> playground}}
     </div>
 </body>
@@ -33,11 +35,27 @@
     </p>
 </template>
 
+<template name="wordInput">
+    <input type="TEXT" id="wordIn" placeholder="Votre mot"/><button id="wordInAlignment">rotation</button>
+</template>
+
+<template name="currentWordTable">
+    <table>
+        <tr id="currentwordTR">
+            {{#each currentWord}}
+                <td>{{letter}}</td>
+            {{/each}}
+        </tr>
+    </table>
+</template>
+
 <template name="playground">
     <table>
         {{#each rows}}
         <tr>
-            <td>test</td><td>test</td>
+            {{#each word}}
+                <td>{{letter}}</td>
+            {{/each}}
         </tr>
         {{/each}}
     </table>
