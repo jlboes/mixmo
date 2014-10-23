@@ -121,7 +121,7 @@ if (Meteor.isClient) {
             
             // get potential grid size
             // CurrentWord size
-            var currentWordSize = CurrentWord.find().length;
+            var currentWordSize = CurrentWord.find().count();
             // biggest H word
             var maxHword = 0;
             // biggest V word
@@ -131,26 +131,50 @@ if (Meteor.isClient) {
                     maxHword = wordObj.word.length;
                 }
             });
+            
             // potential height
+            //            //
+            // max H size = CurrentWord size + max H size
+            //
+            // if word is H add two rows of max size top/bottom
+            //              complete others rows with missing tds
+
             var table = document.getElementById('gridTable');
-            var row = table.insertRow(0);
+
+            //Creating two rows (botton/top) with the same size as the current grid
+            var rowTop = table.insertRow(0);
+            rowTop.className="tmp";
+            var rowBottom = table.insertRow(-1);
+            rowBottom.className="tmp";
+
             for (var i = 0; i < maxHword; i++) {
-                var cell = row.insertCell(0);
+                var cell = rowTop.insertCell(0);
+                cell.className="tmp";
+                var cell = rowBottom.insertCell(0);
                 cell.className="tmp";
             }
-            console.debug(table.firstChild);
+
+            // Add potential max width to all rows
+            var trs = table.getElementsByTagName('tr');
+            for(tr in trs){
+                for($i =0; $i<currentWordSize; $i++){
+                    var cell = trs[tr].insertCell(0);
+                    cell.className="tmp";
+                }
+                for($i =0; $i<currentWordSize; $i++){
+                    var cell = trs[tr].insertCell(-1);
+                    cell.className="tmp";
+                }
+
+            }
+            console.log('-END-');
         },
         'mouseup table': function(){
-            console.log('---------------------------');  // https://developer.mozilla.org/fr/docs/Web/API/HTMLCollection
             var table = document.getElementById('gridTable');
             var tmps = document.getElementsByClassName('tmp');
-            console.debug(tmps);
             var len = tmps.length;
-            for(var i = 0; i < len; i++) {
-                console.debug(tmps[i]);
-                if(tmps[i] != undefined){
-                    tmps[i].parentNode.removeChild(tmps[i]);
-                }
+            while(tmps[0]) {
+                tmps[0].parentNode.removeChild(tmps[0]);
             }
         }
 
