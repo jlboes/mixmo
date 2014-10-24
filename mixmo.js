@@ -28,7 +28,7 @@ if (Meteor.isClient) {
 
 
     Template.currentWordTable.currentWord = function(){
-        return CurrentWord.find() ;
+                return CurrentWord.find() ;
     }
 
 	// EVENTS
@@ -100,23 +100,7 @@ if (Meteor.isClient) {
         }
     });
 
-    Template.playground.events({
-        'mouseover td': function (event) { 
-            var wordToMove = document.getElementsByClassName('currentwordTds');
-            //this == object letter under cursor 
-            // disable color
-            var table = document.getElementById('gridTable');
-            var cells = table.getElementsByTagName("td"); 
-            for (var i = 0; i < cells.length; i++) { 
-                cells[i].className = ""; 
-            }
-            // add classe to selected td
-            var hoverTd = event.currentTarget;
-            hoverTd.className = "active";
-            console.log('clicked');
-            
-
-        },
+    Template.currentWordTable.events({
         'mousedown table': function(){
             
             // get potential grid size
@@ -168,8 +152,36 @@ if (Meteor.isClient) {
 
             }
             console.log('-END-');
+            // jQuery( "#currentwordTR td" ).draggable();
         },
-        'mouseup table': function(){
+        'mousepress':function(){
+            console.log('*-*-*-*-*-*-*');
+        }
+
+    });
+    
+
+    Template.playground.events({
+        'mouseover td': function (event) { 
+            var wordToMove = document.getElementsByClassName('currentwordTds');
+            //this == object letter under cursor 
+            // disable color
+            var table = document.getElementById('gridTable');
+            var cells = table.getElementsByTagName("td"); 
+            for (var i = 0; i < cells.length; i++) { 
+                cells[i].className = ""; 
+            }
+            // add classe to selected td
+            var hoverTd = event.currentTarget;
+            hoverTd.className = "active";
+            console.log('clicked');
+            
+
+        }
+    });
+
+    Template.body.events({
+        'mouseup': function(){
             var table = document.getElementById('gridTable');
             var tmps = document.getElementsByClassName('tmp');
             var len = tmps.length;
@@ -177,9 +189,10 @@ if (Meteor.isClient) {
                 tmps[0].parentNode.removeChild(tmps[0]);
             }
         }
-
-
     });
+ 
+
+
 }
 
 if (Meteor.isServer) {
