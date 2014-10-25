@@ -28,7 +28,12 @@ if (Meteor.isClient) {
 
 
     Template.currentWordTable.currentWord = function(){
-                return CurrentWord.find() ;
+        return CurrentWord.find() ;
+    }
+
+    Template.currentWordTable.rendered = function(){
+        console.log('debug');
+        jQuery( "#currentwordTR td" ).draggable();
     }
 
 	// EVENTS
@@ -81,7 +86,9 @@ if (Meteor.isClient) {
                 CurrentWord.insert({
                         letter: letter,
                         time: Date.now()
-                 })
+                 });
+                console.log('letter added');
+                jQuery( "#currentwordTR td" ).draggable();
             }
         },
         "click #wordInAlignment":function(event){
@@ -167,10 +174,8 @@ if (Meteor.isClient) {
             //this == object letter under cursor 
             // disable color
             var table = document.getElementById('gridTable');
-            var cells = table.getElementsByTagName("td"); 
-            for (var i = 0; i < cells.length; i++) { 
-                cells[i].className = ""; 
-            }
+            var cells = jQuery("#gridTable td");
+            cells.removeClass('active');
             // add classe to selected td
             var hoverTd = event.currentTarget;
             hoverTd.className = "active";
