@@ -40,7 +40,7 @@
 </template>
 
 <template name="currentWordTable">
-    <table>
+    <table id="currentWordTable" class="connectedSortable">
         <tr id="currentwordTR">
             {{#each currentWord}}
                 <td class="currentwordTds ui-widget-content">{{letter}}</td>
@@ -51,7 +51,7 @@
 </template>
 
 <template name="playground">
-    <table id="gridTable">
+    <table id="gridTable" class="connectedSortable">
         {{#each rows}}
         <tr class="gridTableTr" >
             {{#each word}}

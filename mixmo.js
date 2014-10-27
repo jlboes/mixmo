@@ -33,7 +33,7 @@ if (Meteor.isClient) {
 
     Template.currentWordTable.rendered = function(){
         console.log('debug');
-        jQuery( "#currentwordTR td" ).draggable({ revert: "invalid" });
+        jQuery( "#currentwordTR td" ).sortable();
     }
 
     Template.playground.rendered = function(){
@@ -96,7 +96,8 @@ if (Meteor.isClient) {
                         time: Date.now()
                  });
                 console.log('letter added');
-                jQuery( "#currentwordTR td" ).draggable({ revert: "invalid" });
+                jQuery( "#currentWordTable" ).sortable({items: "td", connectWith: ".connectedSortable"});
+                jQuery( "#gridTable" ).sortable({items: "td", connectWith: ".connectedSortable"});
                
             }
         },
