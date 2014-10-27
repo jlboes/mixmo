@@ -6,6 +6,6 @@ td{
     border: solid 1px lightseagreen;
 }
 
-td.active{
+.active{
     background-color:lightblue;
 }

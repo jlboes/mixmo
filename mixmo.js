@@ -33,7 +33,15 @@ if (Meteor.isClient) {
 
     Template.currentWordTable.rendered = function(){
         console.log('debug');
-        jQuery( "#currentwordTR td" ).draggable();
+        jQuery( "#currentwordTR td" ).draggable({ revert: "invalid" });
+    }
+
+    Template.playground.rendered = function(){
+        jQuery( ".gridTableTr" ).droppable({
+                drop: function( event, ui ) {
+                    console.log('dropped');
+                }
+        });
     }
 
 	// EVENTS
@@ -88,7 +96,8 @@ if (Meteor.isClient) {
                         time: Date.now()
                  });
                 console.log('letter added');
-                jQuery( "#currentwordTR td" ).draggable();
+                jQuery( "#currentwordTR td" ).draggable({ revert: "invalid" });
+               
             }
         },
         "click #wordInAlignment":function(event){
@@ -146,20 +155,25 @@ if (Meteor.isClient) {
             }
 
             // Add potential max width to all rows
-            var trs = table.getElementsByTagName('tr');
-            for(tr in trs){
+            var nbCellsToAdd = currentWordSize;
+            var trs = jQuery('#gridTable tr');
+            trs.each(function(){
                 for($i =0; $i<currentWordSize; $i++){
-                    var cell = trs[tr].insertCell(0);
-                    cell.className="tmp";
+                    jQuery(this).append(jQuery("<td>").addClass('tmp'));
+                    jQuery(this).prepend(jQuery("<td>").addClass('tmp'));
+                    console.log('step looping');
                 }
-                for($i =0; $i<currentWordSize; $i++){
-                    var cell = trs[tr].insertCell(-1);
-                    cell.className="tmp";
-                }
+            });
 
-            }
             console.log('-END-');
-            // jQuery( "#currentwordTR td" ).draggable();
+            jQuery( "#gridTable" ).droppable({
+                    accept: "#currentwordTR td",
+                    hoverClass: "active", 
+                    drop: function( event, ui ) {
+                        console.log('dropped');
+                    }
+                });
+
         },
         'mousepress':function(){
             console.log('*-*-*-*-*-*-*');
@@ -175,10 +189,10 @@ if (Meteor.isClient) {
             // disable color
             var table = document.getElementById('gridTable');
             var cells = jQuery("#gridTable td");
-            cells.removeClass('active');
+            //cells.removeClass('active');
             // add classe to selected td
             var hoverTd = event.currentTarget;
-            hoverTd.className = "active";
+            //hoverTd.className = "active";
             console.log('clicked');
             
 
