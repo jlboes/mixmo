@@ -52,7 +52,7 @@ if (Meteor.isClient) {
                     console.log('New player');
                     Meteor.call('getTwoLetters',Session.get("playerName"), function(err, response) {
         			    console.log('got new letters');
-                        jQuery( "#currentwordTR td" ).sortable();
+                        jQuery( "#currentWordTable" ).sortable({items: "td", connectWith: ".connectedSortable"});
                     });
 			        name.value = '';
 				}
@@ -160,16 +160,9 @@ if (Meteor.isClient) {
                     jQuery(this).prepend(jQuery("<td>").addClass('tmp'));
                 }
             });
+            jQuery( ".gridTableTr" ).sortable({items: "td", connectWith: ".connectedSortable"});
 
             console.log('-END-');
-            jQuery( "#gridTable" ).droppable({
-                    accept: "#currentwordTR td",
-                    hoverClass: "active", 
-                    drop: function( event, ui ) {
-                        console.log('dropped');
-                    }
-                });
-
         },
         'mousepress':function(){
             console.log('*-*-*-*-*-*-*');
@@ -196,13 +189,8 @@ if (Meteor.isClient) {
     });
 
     Template.body.events({
-        'mouseup': function(){
-            var table = document.getElementById('gridTable');
-            var tmps = document.getElementsByClassName('tmp');
-            var len = tmps.length;
-            while(tmps[0]) {
-                tmps[0].parentNode.removeChild(tmps[0]);
-            }
+        'mouseup': function(){ 
+            jQuery(".tmp").remove();
         }
     });
  

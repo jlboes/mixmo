@@ -51,7 +51,9 @@
 </template>
 
 <template name="playground">
-    <table id="gridTable" class="connectedSortable">
+<!--
+<table>
+    <tbody id="gridTable" class="connectedSortable">
         {{#each rows}}
         <tr class="gridTableTr" >
             {{#each word}}
@@ -59,5 +61,14 @@
             {{/each}}
         </tr>
         {{/each}}
+        </tbody>
     </table>
+    -->
+<table id="gridTable">
+    <tbody >
+        <tr class="gridTableTr connectedSortable" >
+        </tr>
+        </tbody>
+    </table>
+
 </template>
