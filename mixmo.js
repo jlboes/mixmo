@@ -1,10 +1,13 @@
 Players = new Meteor.Collection('players');
 Rows = new Meteor.Collection('rows');
 Words = new Meteor.Collection('cols');
+//define letter avaible
 CurrentWord = new Meteor.Collection('word');
+
 Alignment = "H";
 
 if (Meteor.isClient) {
+    
   // counter starts at 0
   Session.setDefault("counter", 0);
 
@@ -33,6 +36,8 @@ if (Meteor.isClient) {
 
     Template.currentWordTable.rendered = function(){
         console.log('debug');
+        // Game start : get six letters
+        
         jQuery( "#currentwordTR td" ).sortable();
     }
 
@@ -56,6 +61,7 @@ if (Meteor.isClient) {
 					    login: name.value,
 					    time: Date.now()
 				    });
+                    Session.set("playerName", name.value);
                     console.log('New player');
 			        name.value = '';
 				}
@@ -95,7 +101,6 @@ if (Meteor.isClient) {
                         letter: letter,
                         time: Date.now()
                  });
-                console.log('letter added');
                 jQuery( "#currentWordTable" ).sortable({items: "td", connectWith: ".connectedSortable"});
                 jQuery( "#gridTable" ).sortable({items: "td", connectWith: ".connectedSortable"});
                
@@ -162,7 +167,6 @@ if (Meteor.isClient) {
                 for($i =0; $i<currentWordSize; $i++){
                     jQuery(this).append(jQuery("<td>").addClass('tmp'));
                     jQuery(this).prepend(jQuery("<td>").addClass('tmp'));
-                    console.log('step looping');
                 }
             });
 
@@ -211,7 +215,12 @@ if (Meteor.isClient) {
         }
     });
  
-
+    Meteor.autorun(function() {
+        Meteor.subscribe("letters", Session.get("playerName"));
+    });
+    Meteor.call('getTwoLetters',Session.get("playerName"), function(err, response) {
+			console.log('got new letters');
+    });
 
 }
 
@@ -221,11 +230,27 @@ if (Meteor.isServer) {
     Rows.remove({});
     Words.remove({});
     CurrentWord.remove({});
+    //
+
+    Meteor.publish("letters", function(playerName) {
+        return CurrentWord.find({player: playerName});
+    })
 
     return Meteor.methods({
         clearCurrentWord: function () {
 		    return CurrentWord.remove({});
-	  }
+    	},
+        getTwoLetters: function(playerName){
+            // check if pool is not empty
+            // if empty game over else
+            // get random letter && remove letter from pool
+            var letter1 = "A";
+            var letter2 = "B";
+            
+            CurrentWord.insert({player: playerName, letter: letter1, time: Date.now()});
+            CurrentWord.insert({player: playerName, letter: letter2, time: Date.now()});
+            return null;
+        } 
     });
   });
 }
