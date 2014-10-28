@@ -16,28 +16,15 @@ if (Meteor.isClient) {
     }
 
     Template.playground.rows = function(){
-       /* var cols =  Words.find({}, { sort: { index: -1 }});
-        console.log('count : '+cols.count());
-        var count = 0
-        cols.forEach(function (col) {
-            console.log("Title of post " + count + ": " + col.mot);
-            count += 1;
-        });
-        return cols;*/
         return Words.find({}, { sort: { time: -1 }});
-        // return Rows.find({}, { sort: { time: -1 }});
-
     }
 
 
     Template.currentWordTable.currentWord = function(){
-        return CurrentWord.find() ;
+        return CurrentWord.find({player: Session.get("playerName")}) ;
     }
 
-    Template.currentWordTable.rendered = function(){
-        console.log('debug');
-        // Game start : get six letters
-        
+    Template.currentWordTable.rendered = function(){ 
         jQuery( "#currentwordTR td" ).sortable();
     }
 
@@ -63,6 +50,10 @@ if (Meteor.isClient) {
 				    });
                     Session.set("playerName", name.value);
                     console.log('New player');
+                    Meteor.call('getTwoLetters',Session.get("playerName"), function(err, response) {
+        			    console.log('got new letters');
+                        jQuery( "#currentwordTR td" ).sortable();
+                    });
 			        name.value = '';
 				}
 			}
@@ -218,19 +209,32 @@ if (Meteor.isClient) {
     Meteor.autorun(function() {
         Meteor.subscribe("letters", Session.get("playerName"));
     });
-    Meteor.call('getTwoLetters',Session.get("playerName"), function(err, response) {
-			console.log('got new letters');
-    });
+    
 
 }
 
 if (Meteor.isServer) {
+    function shuffle(array) {
+        for (var i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        return array;
+    }
+
   Meteor.startup(function () {
     // code to run on server at startup
     Rows.remove({});
     Words.remove({});
     CurrentWord.remove({});
-    //
+
+   
+    var alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+    shuffle(alphabet);
+    console.log(alphabet);
+    
 
     Meteor.publish("letters", function(playerName) {
         return CurrentWord.find({player: playerName});
@@ -244,13 +248,15 @@ if (Meteor.isServer) {
             // check if pool is not empty
             // if empty game over else
             // get random letter && remove letter from pool
-            var letter1 = "A";
-            var letter2 = "B";
-            
-            CurrentWord.insert({player: playerName, letter: letter1, time: Date.now()});
-            CurrentWord.insert({player: playerName, letter: letter2, time: Date.now()});
+           
+            if( alphabet.length>1){
+                CurrentWord.insert({player: playerName, letter: alphabet.pop(), time: Date.now()});
+                CurrentWord.insert({player: playerName, letter: alphabet.pop(), time: Date.now()});
+            }
+            //else game over
             return null;
         } 
     });
   });
 }
+
