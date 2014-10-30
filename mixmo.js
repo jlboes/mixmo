@@ -14,12 +14,12 @@ if (Meteor.isClient) {
         });
         jQuery('.tmp').remove();
             
-             
-        //var rowTop = jQuery('#gridTable tbody').find('tbody').prepend(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp'));
+        // Create row at the bottom 
         var rowBottom = jQuery('#gridTable').find('tbody')
             .append(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp')
                     .append(jQuery("<td>").addClass('tmp')));
 
+        // Create row et the top
         var rowTop = jQuery('#gridTable').find('tr').first()
             .before(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp')
                     .append(jQuery("<td>").addClass('tmp')));
@@ -29,11 +29,21 @@ if (Meteor.isClient) {
         var nbCellsToAdd = currentWordSize;
         var trs = jQuery('#gridTable tr');
         trs.each(function(){
-            for($i =0; $i<currentWordSize; $i++){
-               console.debug(jQuery(this).find('td:last'));
+            var tmpLength = jQuery(this).find('td').length;
+            if(nbCellsToAdd<tmpLength){
+                nbCellsToAdd = tmpLength;
+            }
+        });
+
+        // For each line add cells
+        trs.each(function(){
+            console.log('tmpCells '+nbCellsToAdd+' length '+jQuery(this).find('td').length);
+            var cells = (nbCellsToAdd - jQuery(this).find('td').length)/2;
+            console.log('cells : '+cells);
+            for($i =0; $i<cells; $i++){
                 jQuery(this).find('td:last').after(jQuery("<td>").addClass('tmp'));
-                jQuery(this).find('td:first').before(jQuery("<td>").addClass('tmp'));
-               // jQuery(this).prepend(jQuery("<td>").addClass('tmp connectedSortable'));
+                //jQuery(this).find('td:first').before(jQuery("<td>").addClass('tmp'));
+                jQuery(this).find('td').first().before(jQuery("<td>").addClass('tmp'));
             }
         });
         
@@ -44,7 +54,6 @@ if (Meteor.isClient) {
                 placeholder: "active", 
             }).disableSelection();
         
-       // jQuery( "#currentWordTable" ).sortable({items: "td", connectWith: ".connectedSortable"});
     }
 
   // counter starts at 0
