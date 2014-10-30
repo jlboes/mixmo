@@ -9,14 +9,18 @@ Alignment = "H";
 if (Meteor.isClient) {
     
     function updateGrid(maxHword, currentWordSize){
-        jQuery(".tmp").remove();
-
+        jQuery("#gridTable .currentwordTds").each(function(){
+            jQuery(this).parent('tr').removeClass('tmp');
+        });
+        jQuery('.tmp').remove();
+            
+             
         //var rowTop = jQuery('#gridTable tbody').find('tbody').prepend(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp'));
         var rowBottom = jQuery('#gridTable').find('tbody')
             .append(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp')
                     .append(jQuery("<td>").addClass('tmp')));
 
-        var rowTop = jQuery('#gridTable').find('tr')
+        var rowTop = jQuery('#gridTable').find('tr').first()
             .before(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp')
                     .append(jQuery("<td>").addClass('tmp')));
 
