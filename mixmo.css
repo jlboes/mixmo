@@ -4,8 +4,10 @@ td{
     padding : 4px;
     background-color:lightgrey;
     border: solid 1px lightseagreen;
+    width:20px;
+    height:20px;
 }
 
 .active{
-    background-color:lightblue;
+    background-color:lightblue !important;
 }

@@ -8,6 +8,41 @@ Alignment = "H";
 
 if (Meteor.isClient) {
     
+    function updateGrid(maxHword, currentWordSize){
+        jQuery(".tmp").remove();
+
+        //var rowTop = jQuery('#gridTable tbody').find('tbody').prepend(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp'));
+        var rowBottom = jQuery('#gridTable').find('tbody')
+            .append(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp')
+                    .append(jQuery("<td>").addClass('tmp')));
+
+        var rowTop = jQuery('#gridTable').find('tr')
+            .before(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp')
+                    .append(jQuery("<td>").addClass('tmp')));
+
+        
+        // Add potential max width to all rows
+        var nbCellsToAdd = currentWordSize;
+        var trs = jQuery('#gridTable tr');
+        trs.each(function(){
+            for($i =0; $i<currentWordSize; $i++){
+               console.debug(jQuery(this).find('td:last'));
+                jQuery(this).find('td:last').after(jQuery("<td>").addClass('tmp'));
+                jQuery(this).find('td:first').before(jQuery("<td>").addClass('tmp'));
+               // jQuery(this).prepend(jQuery("<td>").addClass('tmp connectedSortable'));
+            }
+        });
+        
+
+        jQuery( "#gridTable .connectedSortable" ).sortable({
+                items: "td", 
+                connectWith: ".connectedSortable", 
+                placeholder: "active", 
+            }).disableSelection();
+        
+       // jQuery( "#currentWordTable" ).sortable({items: "td", connectWith: ".connectedSortable"});
+    }
+
   // counter starts at 0
   Session.setDefault("counter", 0);
 
@@ -25,15 +60,9 @@ if (Meteor.isClient) {
     }
 
     Template.currentWordTable.rendered = function(){ 
-        jQuery( "#currentwordTR td" ).sortable();
     }
 
     Template.playground.rendered = function(){
-        jQuery( ".gridTableTr" ).droppable({
-                drop: function( event, ui ) {
-                    console.log('dropped');
-                }
-        });
     }
 
 	// EVENTS
@@ -50,10 +79,10 @@ if (Meteor.isClient) {
 				    });
                     Session.set("playerName", name.value);
                     console.log('New player');
-                    Meteor.call('getTwoLetters',Session.get("playerName"), function(err, response) {
+                    /*Meteor.call('getTwoLetters',Session.get("playerName"), function(err, response) {
         			    console.log('got new letters');
                         jQuery( "#currentWordTable" ).sortable({items: "td", connectWith: ".connectedSortable"});
-                    });
+                    });*/
 			        name.value = '';
 				}
 			}
@@ -61,48 +90,13 @@ if (Meteor.isClient) {
 	}
 
     Template.wordInput.events = {
-	    "keydown #wordIn": function(event){
-            var input = document.getElementById('wordIn');
-		    if(event.which == 13){
-                // Submit the form
-			    if(input.value != ''){
-				    var tab = CurrentWord.find().fetch();
-                    Words.insert({
-					    word: tab,
-                        alignment: "H",
-					    time: Date.now()
-				    });
-                    console.log('Current word set');
-			        input.value = '';
-                    Meteor.call('clearCurrentWord', function(err, response) {
-            			console.log('CurrentWord cleared');
-            		});
-				}
-			}
-            else if(event.which == 8){
-                // remove last letter
-                var letter = CurrentWord.findOne({}, { sort: { index: -1 }});
-                if(letter != undefined){
-                    CurrentWord.remove(letter._id);
-                }
-            }
-            else{
-                var letter = String.fromCharCode(event.which);
-                CurrentWord.insert({
-                        letter: letter,
-                        time: Date.now()
-                 });
-                jQuery( "#currentWordTable" ).sortable({items: "td", connectWith: ".connectedSortable"});
-                jQuery( "#gridTable" ).sortable({items: "td", connectWith: ".connectedSortable"});
-               
-            }
-        },
-        "click #wordInAlignment":function(event){
-            if(Alignment == "H"){
-                Alignment = "V";
-            } else {
-                Alignment = "H";
-            }
+	    "click #mixmo":function(event){
+            // if grid is valid
+            updateGrid(1,1);
+            Meteor.call('getTwoLetters',Session.get("playerName"), function(err, response) {
+                console.log('got new letters');
+                jQuery( "#currentWordTable" ).sortable({items: "td", connectWith: ".connectedSortable"}).disableSelection();
+            });
         }
 	}
 
@@ -118,16 +112,19 @@ if (Meteor.isClient) {
             
             // get potential grid size
             // CurrentWord size
-            var currentWordSize = CurrentWord.find().count();
+            var currentWordSize = 1; //CurrentWord.find().count();
             // biggest H word
-            var maxHword = 0;
+            var maxHword = 1;
             // biggest V word
             var maxVword = 0;
-            Words.find().forEach(function(wordObj){
+            
+            /*
+             Words.find().forEach(function(wordObj){
                 if(wordObj.word.length>maxHword){
                     maxHword = wordObj.word.length;
                 }
             });
+            */
             
             // potential height
             //            //
@@ -136,31 +133,7 @@ if (Meteor.isClient) {
             // if word is H add two rows of max size top/bottom
             //              complete others rows with missing tds
 
-            var table = document.getElementById('gridTable');
-
-            //Creating two rows (botton/top) with the same size as the current grid
-            var rowTop = table.insertRow(0);
-            rowTop.className="tmp";
-            var rowBottom = table.insertRow(-1);
-            rowBottom.className="tmp";
-
-            for (var i = 0; i < maxHword; i++) {
-                var cell = rowTop.insertCell(0);
-                cell.className="tmp";
-                var cell = rowBottom.insertCell(0);
-                cell.className="tmp";
-            }
-
-            // Add potential max width to all rows
-            var nbCellsToAdd = currentWordSize;
-            var trs = jQuery('#gridTable tr');
-            trs.each(function(){
-                for($i =0; $i<currentWordSize; $i++){
-                    jQuery(this).append(jQuery("<td>").addClass('tmp'));
-                    jQuery(this).prepend(jQuery("<td>").addClass('tmp'));
-                }
-            });
-            jQuery( ".gridTableTr" ).sortable({items: "td", connectWith: ".connectedSortable"});
+           //updateGrid(maxHword, currentWordSize); 
 
             console.log('-END-');
         },
@@ -185,12 +158,15 @@ if (Meteor.isClient) {
             console.log('clicked');
             
 
-        }
+        },
+        'mousedown table': function(){
+            
+        },
     });
 
     Template.body.events({
         'mouseup': function(){ 
-            jQuery(".tmp").remove();
+            console.log('mouse up'); 
         }
     });
  
@@ -219,7 +195,15 @@ if (Meteor.isServer) {
     CurrentWord.remove({});
 
    
-    var alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+    var alphabet = "aaaaaaaaaa"
+      +"bbcccdddd"+
+      "eeeeeeeeeeeeeeeee"+
+      "ffggghhhiiiiiiiii"+
+      "jjkllllllmmmnnnnnnn"+
+      "oooooooopppqqrrrrrr"+
+      "ssssssstttttttuuuuuuvvv"+
+      "wxyz**$";
+    alphabet = alphabet.split("");
     shuffle(alphabet);
     console.log(alphabet);
     
