@@ -14,15 +14,18 @@ if (Meteor.isClient) {
         });
         jQuery('.tmp').remove();
             
-        // Create row at the bottom 
-        var rowBottom = jQuery('#gridTable').find('tbody')
-            .append(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp')
-                    .append(jQuery("<td>").addClass('tmp')));
+        var size = CurrentWord.find().count()/2;
+        for(var i=0; i<=size; i++){
+            // Create row at the bottom 
+            var rowBottom = jQuery('#gridTable').find('tbody')
+                .append(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp')
+                        .append(jQuery("<td>").addClass('tmp')));
 
-        // Create row et the top
-        var rowTop = jQuery('#gridTable').find('tr').first()
-            .before(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp')
-                    .append(jQuery("<td>").addClass('tmp')));
+            // Create row et the top
+            var rowTop = jQuery('#gridTable').find('tr').first()
+                .before(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp')
+                        .append(jQuery("<td>").addClass('tmp')));
+        }
 
         
         // Add potential max width to all rows
@@ -35,10 +38,11 @@ if (Meteor.isClient) {
             }
         });
 
+       
         // For each line add cells
         trs.each(function(){
             console.log('tmpCells '+nbCellsToAdd+' length '+jQuery(this).find('td').length);
-            var cells = (nbCellsToAdd - jQuery(this).find('td').length)/2;
+            var cells = (nbCellsToAdd - jQuery(this).find('td').length/2)/2;
             console.log('cells : '+cells);
             for($i =0; $i<cells; $i++){
                 jQuery(this).find('td:last').after(jQuery("<td>").addClass('tmp'));
@@ -51,7 +55,7 @@ if (Meteor.isClient) {
         jQuery( "#gridTable .connectedSortable" ).sortable({
                 items: "td", 
                 connectWith: ".connectedSortable", 
-                placeholder: "active", 
+                placeholder: "active",   
             }).disableSelection();
         
     }
@@ -122,36 +126,9 @@ if (Meteor.isClient) {
 
     Template.currentWordTable.events({
         'mousedown table': function(){
-            
-            // get potential grid size
-            // CurrentWord size
-            var currentWordSize = 1; //CurrentWord.find().count();
-            // biggest H word
-            var maxHword = 1;
-            // biggest V word
-            var maxVword = 0;
-            
-            /*
-             Words.find().forEach(function(wordObj){
-                if(wordObj.word.length>maxHword){
-                    maxHword = wordObj.word.length;
-                }
-            });
-            */
-            
-            // potential height
-            //            //
-            // max H size = CurrentWord size + max H size
-            //
-            // if word is H add two rows of max size top/bottom
-            //              complete others rows with missing tds
-
-           //updateGrid(maxHword, currentWordSize); 
-
-            console.log('-END-');
+           
         },
         'mousepress':function(){
-            console.log('*-*-*-*-*-*-*');
         }
 
     });
@@ -207,7 +184,8 @@ if (Meteor.isServer) {
     Words.remove({});
     CurrentWord.remove({});
 
-   
+    /**** Constitution du tableau de lettres ****/
+    // Préparation des lettres
     var alphabet = "aaaaaaaaaa"
       +"bbcccdddd"+
       "eeeeeeeeeeeeeeeee"+
@@ -216,9 +194,10 @@ if (Meteor.isServer) {
       "oooooooopppqqrrrrrr"+
       "ssssssstttttttuuuuuuvvv"+
       "wxyz**$";
+    // Conversion en tableau
     alphabet = alphabet.split("");
+    // Mélange les lettres
     shuffle(alphabet);
-    console.log(alphabet);
     
 
     Meteor.publish("letters", function(playerName) {
