@@ -11,3 +11,7 @@ td{
 .active{
     background-color:lightblue !important;
 }
+
+.valid{
+    background-color:green !important;
+}

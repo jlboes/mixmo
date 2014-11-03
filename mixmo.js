@@ -60,6 +60,26 @@ if (Meteor.isClient) {
         
     }
 
+    function isGridValid(){
+        var trs = jQuery('#gridTable tr');
+        var tmpWords = array();
+        // pour chaque ligne
+        trs.each(function(){
+            var tmpWords = array();
+            jQuery(this).find('td').each(function(){
+                //get inline Word
+                if(jQuery(this).hasClass('currentwordTds')){
+                    console.log(jQuery(this).id());
+                }
+
+            });
+            // if tmp is valid add valid 
+        });
+
+        // pour chaque col
+
+    }
+
   // counter starts at 0
   Session.setDefault("counter", 0);
 
@@ -109,9 +129,12 @@ if (Meteor.isClient) {
     Template.wordInput.events = {
 	    "click #mixmo":function(event){
             // if grid is valid
-            updateGrid(1,1);
+            
+            
+
             Meteor.call('getTwoLetters',Session.get("playerName"), function(err, response) {
                 console.log('got new letters');
+                updateGrid(1,1);
                 jQuery( "#currentWordTable" ).sortable({items: "td", connectWith: ".connectedSortable"}).disableSelection();
             });
         }
@@ -211,12 +234,14 @@ if (Meteor.isServer) {
         getTwoLetters: function(playerName){
             // check if pool is not empty
             // if empty game over else
-            // get random letter && remove letter from pool
+            Players.find().forEach(function (player) {
+                // get random letter && remove letter from pool
            
-            if( alphabet.length>1){
-                CurrentWord.insert({player: playerName, letter: alphabet.pop(), time: Date.now()});
-                CurrentWord.insert({player: playerName, letter: alphabet.pop(), time: Date.now()});
-            }
+                if( alphabet.length>1){
+                    CurrentWord.insert({player: player.login, letter: alphabet.pop(), time: Date.now()});
+                    CurrentWord.insert({player: player.login, letter: alphabet.pop(), time: Date.now()});
+                }
+            });
             //else game over
             return null;
         } 
