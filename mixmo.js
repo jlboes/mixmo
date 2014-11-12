@@ -100,6 +100,16 @@ if (Meteor.isClient) {
     }
 
     Template.playground.rendered = function(){
+        var tbody = jQuery('tbody');
+        
+        for(var i=0; i<60; i++){
+            var tds = jQuery('<tr>').addClass('gridTableTr connectedSortable')
+            for(var j=0; j<60; j++){
+                tds.append('<td>');
+            }
+
+            tbody.append(tds);
+        }
     }
 
 	// EVENTS
