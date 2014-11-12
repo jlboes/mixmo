@@ -7,77 +7,77 @@ CurrentWord = new Meteor.Collection('word');
 Alignment = "H";
 
 if (Meteor.isClient) {
-    
-    function updateGrid(maxHword, currentWordSize){
-        jQuery("#gridTable .currentwordTds").each(function(){
-            jQuery(this).parent('tr').removeClass('tmp');
-        });
-        jQuery('.tmp').remove();
-            
-        var size = CurrentWord.find().count()/2;
-        for(var i=0; i<=size; i++){
-            // Create row at the bottom 
-            var rowBottom = jQuery('#gridTable').find('tbody')
-                .append(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp')
-                        .append(jQuery("<td>").addClass('tmp')));
 
-            // Create row et the top
-            var rowTop = jQuery('#gridTable').find('tr').first()
-                .before(jQuery('<tr>').addClass('gridTableTr connectedSortable tmp')
-                        .append(jQuery("<td>").addClass('tmp')));
-        }
+    function isGridValid(event, ui){
+        var item = $(ui.item);
+        var sender = $(ui.sender);
 
-        
-        // Add potential max width to all rows
-        var nbCellsToAdd = currentWordSize;
-        var trs = jQuery('#gridTable tr');
-        trs.each(function(){
-            var tmpLength = jQuery(this).find('td').length;
-            if(nbCellsToAdd<tmpLength){
-                nbCellsToAdd = tmpLength;
-            }
-        });
-
-       
-        // For each line add cells
-        trs.each(function(){
-            console.log('tmpCells '+nbCellsToAdd+' length '+jQuery(this).find('td').length);
-            var cells = (nbCellsToAdd - jQuery(this).find('td').length/2)/2;
-            console.log('cells : '+cells);
-            for($i =0; $i<cells; $i++){
-                jQuery(this).find('td:last').after(jQuery("<td>").addClass('tmp'));
-                //jQuery(this).find('td:first').before(jQuery("<td>").addClass('tmp'));
-                jQuery(this).find('td').first().before(jQuery("<td>").addClass('tmp'));
-            }
-        });
-        
-
-        jQuery( "#gridTable .connectedSortable" ).sortable({
-                items: "td", 
-                connectWith: ".connectedSortable", 
-                placeholder: "active",   
-            }).disableSelection();
-        
+        var vWord = getVword(item);
+        var hWord = getHword(item);
+                
     }
 
-    function isGridValid(){
-        var trs = jQuery('#gridTable tr');
-        var tmpWords = array();
-        // pour chaque ligne
-        trs.each(function(){
-            var tmpWords = array();
-            jQuery(this).find('td').each(function(){
-                //get inline Word
-                if(jQuery(this).hasClass('currentwordTds')){
-                    console.log(jQuery(this).id());
-                }
+    function getVword(item){
+        var vWord = "";
+        var cellIndex = item.index();
 
-            });
-            // if tmp is valid add valid 
-        });
+        var prevTr = item.parent().prev('tr');
+        var letter = prevTr.find('td').eq(cellIndex).html();
 
-        // pour chaque col
+        var safety = true;
+        var safetyInc = 60;
+        while((letter!= "" && letter!= undefined) && safety){
+            //console.log('html : '+letter);
+            vWord = letter + vWord;
+            
+            prevTr = prevTr.prev('tr');
+            letter = prevTr.find('td').eq(cellIndex).html();
+            safetyInc--;
+            if(safetyInc < 0){
+                console.error("safety break 1");
+                safety = false;
+            }
+        }
+        
+        vWord = vWord + item.html();
 
+        var nextTr = item.parent().next('tr');
+        letter = nextTr.find('td').eq(cellIndex).html();
+
+        safety = true;
+        safetyInc = 60;
+        while((letter!= "" && letter!= undefined) && safety){
+            vWord = vWord+letter;
+
+            nextTr = nextTr.next('tr');
+            letter = nextTr.find('td').eq(cellIndex).html();
+
+            safetyInc--;
+            if(safetyInc < 0){
+                console.error("safety break 2");
+                safety = false;
+            }
+        }
+
+        console.log("vWord : "+vWord);
+        return vWord;
+    }
+
+    function getHword(item){
+        var hWord = "";
+        var prevTd = item.prev('td');
+        while(prevTd.html()!=""){
+             hWord = prevTd.html() + hWord;
+            prevTd = prevTd.prev('td');
+        }
+        hWord = hWord + item.html();
+        var nextTd = item.next('td');
+        while(nextTd.html()!=""){ 
+            hWord = hWord + nextTd.html();
+            nextTd = nextTd.next('td');
+        }
+        console.log('h word : '+hWord);
+        return hWord;
     }
 
   // counter starts at 0
@@ -100,6 +100,7 @@ if (Meteor.isClient) {
     }
 
     Template.playground.rendered = function(){
+        /*** RENDER MAX GRID ***/
         var tbody = jQuery('tbody');
         
         for(var i=0; i<60; i++){
@@ -110,6 +111,18 @@ if (Meteor.isClient) {
 
             tbody.append(tds);
         }
+        /*** END RENDER MAX GRID ***/
+
+        // Make the grid sortable
+        jQuery( "#gridTable .connectedSortable" ).sortable({
+                items: "td", 
+                connectWith: ".connectedSortable", 
+                placeholder: "active",   
+                stop: function(event, ui) {
+                        isGridValid(event, ui);
+                }
+            }).disableSelection();
+
     }
 
 	// EVENTS
@@ -138,14 +151,15 @@ if (Meteor.isClient) {
 
     Template.wordInput.events = {
 	    "click #mixmo":function(event){
-            // if grid is valid
-            
-            
-
             Meteor.call('getTwoLetters',Session.get("playerName"), function(err, response) {
                 console.log('got new letters');
-                updateGrid(1,1);
-                jQuery( "#currentWordTable" ).sortable({items: "td", connectWith: ".connectedSortable"}).disableSelection();
+                jQuery( "#currentWordTable" ).sortable({
+                    items: "td",
+                    connectWith: ".connectedSortable",
+                    stop: function(event, ui) {
+                        isGridValid(event, ui);
+                    }
+                }).disableSelection();
             });
         }
 	}
@@ -168,23 +182,7 @@ if (Meteor.isClient) {
     
 
     Template.playground.events({
-        'mouseover td': function (event) { 
-            var wordToMove = document.getElementsByClassName('currentwordTds');
-            //this == object letter under cursor 
-            // disable color
-            var table = document.getElementById('gridTable');
-            var cells = jQuery("#gridTable td");
-            //cells.removeClass('active');
-            // add classe to selected td
-            var hoverTd = event.currentTarget;
-            //hoverTd.className = "active";
-            console.log('clicked');
-            
-
-        },
-        'mousedown table': function(){
-            
-        },
+        
     });
 
     Template.body.events({
