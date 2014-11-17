@@ -3,7 +3,9 @@ meteor add jquery
 meteor add jquery-ui
 meteor add houston:admin
 
+===== Importer un dictionnaire =====
 
+mongoimport -h localhost:3001 --db meteor --collection dictionary --type json --file mots_fr_utf8.json
 
 ===== The Game =====
 Components of the game:

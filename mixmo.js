@@ -14,7 +14,7 @@ if (Meteor.isClient) {
 
         var vWord = getVword(item);
         var hWord = getHword(item);
-                
+
     }
 
     function getVword(item){
@@ -193,6 +193,7 @@ if (Meteor.isClient) {
  
     Meteor.autorun(function() {
         Meteor.subscribe("letters", Session.get("playerName"));
+        Meteor.subscribe("players");
     });
     
 
@@ -208,6 +209,7 @@ if (Meteor.isServer) {
         }
         return array;
     }
+
 
   Meteor.startup(function () {
     // code to run on server at startup
@@ -229,11 +231,16 @@ if (Meteor.isServer) {
     alphabet = alphabet.split("");
     // Mélange les lettres
     shuffle(alphabet);
-    
+
 
     Meteor.publish("letters", function(playerName) {
         return CurrentWord.find({player: playerName});
     })
+
+    Meteor.publish("players", function() {
+        return Players.find();
+    })
+
 
     return Meteor.methods({
         clearCurrentWord: function () {
