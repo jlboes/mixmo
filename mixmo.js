@@ -12,44 +12,62 @@ if (Meteor.isClient) {
         var item = $(ui.item);
         var sender = $(ui.sender);
 
-        var vWord = getVword(item);
-        var hWord = getHword(item);
+        var vWordTds = getVwordTds(item);
+        var hWordTds = getHwordTds(item);
 
+        var vWord = "";
+        var hWord = "";
+
+        jQuery.each(vWordTds, function(index, value){
+            vWord = vWord + value.html();
+        });
+        jQuery.each(hWordTds, function(index, value){
+            hWord = hWord + value.html();
+        });
+        console.log("vWord : "+vWord);
 
         var valid = true;
-            Meteor.call('isWordValid',hWord, vWord, function(err, response) {
-                console.log('is word valid');
-                console.debug(response);
-                valid = response;
+        Meteor.call('isWordValid',hWord, vWord, function(err, response) {
+            console.log('is word valid');
+            console.debug(response);
+            valid = response;
 
-                console.log("valid : "+valid);
-                if(valid == "true" || valid == true){
-                    item.addClass('valid');
-                    item.removeClass('notValid');
-                }else{
-                    item.addClass('notValid');
-                    item.removeClass('valid');
-                }
-
-            });
+            console.log("valid : "+valid);
+            if(valid == "true" || valid == true){
+                item.removeClass('notValid');
+                jQuery.each(vWordTds, function(index, value){
+                    value.addClass('valid');
+                    value.removeClass('notValid');
+                });
+                jQuery.each(hWordTds, function(index, value){
+                    value.addClass('valid');
+                    value.removeClass('notValid');
+                });
+            }else{
+                item.addClass('notValid');
+                item.removeClass('valid');
+            }
+        });
 
     }
 
-    function getVword(item){
-        var vWord = "";
+    function getVwordTds(item){
+        var vWord = new Array();
         var cellIndex = item.index();
 
         var prevTr = item.parent().prev('tr');
-        var letter = prevTr.find('td').eq(cellIndex).html();
+        var letterTd = prevTr.find('td').eq(cellIndex);
+        var letter = letterTd.html();
 
         var safety = true;
         var safetyInc = 60;
         while((letter!= "" && letter!= undefined) && safety){
             //console.log('html : '+letter);
-            vWord = letter + vWord;
+            vWord.unshift(letterTd);
             
             prevTr = prevTr.prev('tr');
-            letter = prevTr.find('td').eq(cellIndex).html();
+            letterTd = prevTr.find('td').eq(cellIndex);
+            letter = letterTd.html();
             safetyInc--;
             if(safetyInc < 0){
                 console.error("safety break 1");
@@ -57,18 +75,20 @@ if (Meteor.isClient) {
             }
         }
         
-        vWord = vWord + item.html();
+        vWord.push(item);
 
         var nextTr = item.parent().next('tr');
-        letter = nextTr.find('td').eq(cellIndex).html();
+        letterTd = nextTr.find('td').eq(cellIndex);
+        letter = letterTd.html();
 
         safety = true;
         safetyInc = 60;
         while((letter!= "" && letter!= undefined) && safety){
-            vWord = vWord+letter;
+            vWord.push(letterTd);
 
             nextTr = nextTr.next('tr');
-            letter = nextTr.find('td').eq(cellIndex).html();
+            letterTd = nextTr.find('td').eq(cellIndex);
+            letter = letterTd.html();
 
             safetyInc--;
             if(safetyInc < 0){
@@ -77,24 +97,23 @@ if (Meteor.isClient) {
             }
         }
 
-        console.log("vWord : "+vWord);
         return vWord;
     }
 
-    function getHword(item){
-        var hWord = "";
+    function getHwordTds(item){
+        var hWord = new Array();
         var prevTd = item.prev('td');
         while(prevTd.html()!=""){
-             hWord = prevTd.html() + hWord;
+             hWord.unshift(prevTd);
             prevTd = prevTd.prev('td');
         }
-        hWord = hWord + item.html();
+        hWord.push(item);
         var nextTd = item.next('td');
         while(nextTd.html()!=""){ 
-            hWord = hWord + nextTd.html();
+            hWord.push(nextTd);
             nextTd = nextTd.next('td');
         }
-        console.log('h word : '+hWord);
+
         return hWord;
     }
 
