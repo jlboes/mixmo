@@ -15,3 +15,6 @@ td{
 .valid{
     background:green !important;
 }
+.notValid{
+    background:lightpink !important;
+}

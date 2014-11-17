@@ -15,6 +15,24 @@ if (Meteor.isClient) {
         var vWord = getVword(item);
         var hWord = getHword(item);
 
+
+        var valid = true;
+            Meteor.call('isWordValid',hWord, vWord, function(err, response) {
+                console.log('is word valid');
+                console.debug(response);
+                valid = response;
+
+                console.log("valid : "+valid);
+                if(valid == "true" || valid == true){
+                    item.addClass('valid');
+                    item.removeClass('notValid');
+                }else{
+                    item.addClass('notValid');
+                    item.removeClass('valid');
+                }
+
+            });
+
     }
 
     function getVword(item){
@@ -217,6 +235,8 @@ if (Meteor.isServer) {
     Words.remove({});
     CurrentWord.remove({});
 
+    var Dictionnary = new Meteor.Collection('dictionary');
+
     /**** Constitution du tableau de lettres ****/
     // Préparation des lettres
     var alphabet = "aaaaaaaaaa"
@@ -259,8 +279,39 @@ if (Meteor.isServer) {
             });
             //else game over
             return null;
-        } 
+        },
+        isWordValid: function(wordTotTest1, wordTotTest2){
+
+            var status = false;
+            if(wordTotTest1.length>1)
+            {
+
+                var doc = Dictionnary.findOne({word:wordTotTest1});
+                if(doc!= undefined)
+                {
+                    status = true;
+                }
+            } else{
+                status = true;
+            }
+
+            var status2 = false;
+            if(wordTotTest2.length>1)
+            {
+
+                var doc = Dictionnary.findOne({word:wordTotTest2});
+                if(doc!= undefined)
+                {
+                    status2 = true;
+                }
+            } else{
+                status2 = true;
+            }
+
+            return status && status2;
+        }
     });
-  });
+
+    });
 }
 
