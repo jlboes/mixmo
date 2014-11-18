@@ -1,6 +1,4 @@
 Players = new Meteor.Collection('players');
-Rows = new Meteor.Collection('rows');
-Words = new Meteor.Collection('cols');
 //define letter avaible
 CurrentWord = new Meteor.Collection('word');
 
@@ -124,16 +122,9 @@ if (Meteor.isClient) {
         return Players.find({}, { sort: { time: -1 }});
     }
 
-    Template.playground.rows = function(){
-        return Words.find({}, { sort: { time: -1 }});
-    }
-
 
     Template.currentWordTable.currentWord = function(){
         return CurrentWord.find({player: Session.get("playerName")}) ;
-    }
-
-    Template.currentWordTable.rendered = function(){ 
     }
 
     Template.playground.rendered = function(){
@@ -207,26 +198,6 @@ if (Meteor.isClient) {
             Players.remove(this._id);
         }
     });
-
-    Template.currentWordTable.events({
-        'mousedown table': function(){
-           
-        },
-        'mousepress':function(){
-        }
-
-    });
-    
-
-    Template.playground.events({
-        
-    });
-
-    Template.body.events({
-        'mouseup': function(){ 
-            console.log('mouse up'); 
-        }
-    });
  
     Meteor.autorun(function() {
         Meteor.subscribe("letters", Session.get("playerName"));
@@ -250,8 +221,6 @@ if (Meteor.isServer) {
 
   Meteor.startup(function () {
     // code to run on server at startup
-    Rows.remove({});
-    Words.remove({});
     CurrentWord.remove({});
 
     var Dictionnary = new Meteor.Collection('dictionary');
