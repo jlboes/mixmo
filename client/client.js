@@ -1,6 +1,3 @@
-Players = new Meteor.Collection('players');
-//define letter avaible
-CurrentWord = new Meteor.Collection('word');
 
 function isGridValid(event, ui){
     var item = $(ui.item);
