@@ -1,4 +1,12 @@
 
+Session.setDefault("playerName", "");
+
+/*
+|------------------------------------------------------------------------------
+|   UTILS
+|------------------------------------------------------------------------------
+*/
+
 function isGridValid(event, ui){
     var item = $(ui.item);
     var sender = $(ui.sender);
@@ -108,17 +116,34 @@ function getHwordTds(item){
     return hWord;
 }
 
-// counter starts at 0
-Session.setDefault("counter", 0);
+/*
+|------------------------------------------------------------------------------
+|   TEMPLATE.HELPERS 
+|------------------------------------------------------------------------------
+*/
 
-Template.players.players = function(){
-    return Players.find({}, { sort: { time: -1 }});
-}
+Template.entryfield.helpers({
+    canShowInput : function(){
+        return Session.get("playerName") == 'undefined'
+            || Session.get("playerName") == '';
+    }
+});
+
+Template.players.helpers({
+    players : function(){
+        return Players.find({}, { sort: { time: -1 }});
+    },
+    canDelete : function(){
+        return this.login == Session.get("playerName");
+    }
+});
 
 
-Template.currentWordTable.currentWord = function(){
-    return CurrentWord.find({player: Session.get("playerName")}) ;
-}
+Template.currentWordTable.helpers({
+    currentWord : function(){
+        return CurrentWord.find({player: Session.get("playerName")}) ;
+    }
+});
 
 Template.playground.rendered = function(){
     /*** RENDER MAX GRID ***/
@@ -146,7 +171,11 @@ Template.playground.rendered = function(){
 
 }
 
-// EVENTS
+/*
+|------------------------------------------------------------------------------
+|   TEMPLATE.EVENTS 
+|------------------------------------------------------------------------------
+*/
 
 Template.entryfield.events = {
     "keydown #name": function(event){
@@ -154,16 +183,13 @@ Template.entryfield.events = {
             var name = document.getElementById('name');
             // Submit the form
             if(name.value != ''){
-                Players.insert({
-                    login: name.value,
-                    time: Date.now()
-                });
                 Session.set("playerName", name.value);
-                console.log('New player');
-                /*Meteor.call('getTwoLetters',Session.get("playerName"), function(err, response) {
-                    console.log('got new letters');
-                    jQuery( "#currentWordTable" ).sortable({items: "td", connectWith: ".connectedSortable"});
-                });*/
+                Meteor.call('addPlayer', name.value, function(err, response) {
+                    console.log('New player : ' + name.value);
+                    if(err) {
+                        Session.set("playerName", "");
+                    } 
+                });
                 name.value = '';
             }
         }
@@ -187,8 +213,11 @@ Template.wordInput.events = {
 
 Template.players.events = ({
     "click .playerList": function(event){
-        console.log("remove "+this._id);
-        Players.remove(this._id);
+        if (this.login === Session.get("playerName")) {
+            console.log("remove "+this._id);
+            Players.remove(this._id);
+            Session.set("playerName", "");
+        }
     }
 });
 

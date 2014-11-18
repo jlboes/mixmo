@@ -90,6 +90,18 @@ Meteor.startup(function () {
             }
 
             return status && status2;
+        },
+        addPlayer : function(name) {
+            Players.update({
+                login: name
+            }, {
+                $set: {
+                    time: Date.now()
+                }
+            }, {
+                multi: false,
+                upsert: true
+            });
         }
     });
 

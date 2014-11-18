@@ -17,20 +17,16 @@
     </div>
 </body>
 
-<template name="hello">
-  <button>Click Me</button>
-  <p>Shared counter  {{counter}} </p>
-  <p>Someone else pressed the button</p>
-  </template>
-
 <template name="entryfield">
-    <input type="text" id="name" placeholder="Login" /> 
+    {{#if canShowInput}}
+        <input type="text" id="name" placeholder="Login" /> 
+    {{/if}}
 </template>
 
 <template name="players">
     <p>
         {{#each players}}
-            <label class="playerList" id="{{_id}}"><strong>{{login}}</strong>    X</label>
+            <label class="playerList" id="{{_id}}"><strong>{{login}}</strong>{{#if canDelete}}    X{{/if}}</label>
         {{/each}}
     </p>
 </template>
