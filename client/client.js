@@ -172,7 +172,8 @@ Template.playground.rendered = function(){
     for(var i=0; i<60; i++){
         var tds = jQuery('<tr>').addClass('gridTableTr connectedSortable')
         for(var j=0; j<60; j++){
-            tds.append('<td>').addClass('ui-state-disabled');
+            var td = jQuery('<td>').addClass('ui-state-disabled');
+            tds.append(td) ;
         }
 
         tbody.append(tds);
