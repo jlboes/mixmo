@@ -172,7 +172,7 @@ Template.playground.rendered = function(){
     for(var i=0; i<60; i++){
         var tds = jQuery('<tr>').addClass('gridTableTr connectedSortable')
         for(var j=0; j<60; j++){
-            tds.append('<td>');
+            tds.append('<td>').addClass('ui-state-disabled');
         }
 
         tbody.append(tds);
@@ -186,7 +186,8 @@ Template.playground.rendered = function(){
             placeholder: "active",   
             stop: function(event, ui) {
                     isGridValid(event, ui);
-            }
+            },
+            cancel: ".ui-state-disabled"
         }).disableSelection();
 
 }
@@ -223,7 +224,7 @@ Template.wordInput.events = {
     "click #startGame":function(event){
         if( Players.find({}).count()>=2 
             && !(Session.get("playerName") == 'undefined' || Session.get("playerName") == '')){
-            
+
             inGame.set(true);
             for (var i = 0; i < 3; i++) {
                 getLetters();
