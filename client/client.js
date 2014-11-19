@@ -221,7 +221,9 @@ Template.wordInput.events = {
         getLetters();
     },
     "click #startGame":function(event){
-        if( Players.find({}).count()>=2 ){
+        if( Players.find({}).count()>=2 
+            && !(Session.get("playerName") == 'undefined' || Session.get("playerName") == '')){
+            
             inGame.set(true);
             for (var i = 0; i < 3; i++) {
                 getLetters();
