@@ -116,6 +116,19 @@ function getHwordTds(item){
     return hWord;
 }
 
+function getLetters(){
+    Meteor.call('getTwoLetters',Session.get("playerName"), function(err, response) {
+        console.log('got new letters');
+        jQuery( "#currentWordTable" ).sortable({
+            items: "td",
+            connectWith: ".connectedSortable",
+            stop: function(event, ui) {
+                isGridValid(event, ui);
+            }
+        }).disableSelection();
+    });
+}
+
 /*
 |------------------------------------------------------------------------------
 |   TEMPLATE.HELPERS 
@@ -205,20 +218,14 @@ Template.entryfield.events = {
 
 Template.wordInput.events = {
     "click #mixmo":function(event){
-        Meteor.call('getTwoLetters',Session.get("playerName"), function(err, response) {
-            console.log('got new letters');
-            jQuery( "#currentWordTable" ).sortable({
-                items: "td",
-                connectWith: ".connectedSortable",
-                stop: function(event, ui) {
-                    isGridValid(event, ui);
-                }
-            }).disableSelection();
-        });
+        getLetters();
     },
     "click #startGame":function(event){
         if( Players.find({}).count()>=2 ){
             inGame.set(true);
+            for (var i = 0; i < 3; i++) {
+                getLetters();
+            };
         }
     },
     "click #restartGame":function(event){
