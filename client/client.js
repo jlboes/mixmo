@@ -145,6 +145,13 @@ Template.currentWordTable.helpers({
     }
 });
 
+
+Template.wordInput.helpers({
+    inGame : function(){
+        return inGame.get();
+    }
+});
+
 Template.playground.rendered = function(){
     /*** RENDER MAX GRID ***/
     var tbody = jQuery('tbody');
@@ -208,6 +215,14 @@ Template.wordInput.events = {
                 }
             }).disableSelection();
         });
+    },
+    "click #startGame":function(event){
+        if( Players.find({}).count()>=2 ){
+            inGame.set(true);
+        }
+    },
+    "click #restartGame":function(event){
+        inGame.set(false);
     }
 }
 
