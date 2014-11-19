@@ -230,6 +230,10 @@ Template.wordInput.events = {
     },
     "click #restartGame":function(event){
         inGame.set(false);
+        Meteor.call('restart', function(err, response) {
+            console.log('game restarted');
+            jQuery(".currentwordTds").remove();
+        });
     }
 }
 

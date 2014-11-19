@@ -1,4 +1,20 @@
-
+function createGameLetters(){
+    /**** Constitution du tableau de lettres ****/
+    // Préparation des lettres
+    var alphabet = "aaaaaaaaaa"
+      +"bbcccdddd"+
+      "eeeeeeeeeeeeeeeee"+
+      "ffggghhhiiiiiiiii"+
+      "jjkllllllmmmnnnnnnn"+
+      "oooooooopppqqrrrrrr"+
+      "ssssssstttttttuuuuuuvvv"+
+      "wxyz**$";
+    // Conversion en tableau
+    alphabet = alphabet.split("");
+    // Mélange les lettres
+    shuffle(alphabet);
+    return alphabet;
+}
 
 
 function shuffle(array) {
@@ -18,20 +34,7 @@ Meteor.startup(function () {
 
     var Dictionnary = new Meteor.Collection('dictionary');
 
-    /**** Constitution du tableau de lettres ****/
-    // Préparation des lettres
-    var alphabet = "aaaaaaaaaa"
-      +"bbcccdddd"+
-      "eeeeeeeeeeeeeeeee"+
-      "ffggghhhiiiiiiiii"+
-      "jjkllllllmmmnnnnnnn"+
-      "oooooooopppqqrrrrrr"+
-      "ssssssstttttttuuuuuuvvv"+
-      "wxyz**$";
-    // Conversion en tableau
-    alphabet = alphabet.split("");
-    // Mélange les lettres
-    shuffle(alphabet);
+    var alphabet = createGameLetters();
 
 
     Meteor.publish("letters", function(playerName) {
@@ -102,6 +105,9 @@ Meteor.startup(function () {
                 multi: false,
                 upsert: true
             });
+        },
+        restart : function() {
+            alphabet = createGameLetters();
         }
     });
 
