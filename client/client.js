@@ -222,7 +222,13 @@ Template.entryfield.events = {
     //     }
     // }
     "click #createRoom":function(event){
-        Meteor.call('createRoom', "testRoom");
+        
+        bootbox.prompt("What is the name of the room?", function(result) {                
+          if (result === null || result.trim().length <1) {
+          } else {
+            Meteor.call('createRoom', result);
+          }
+        });
     },
     "click .removeRoomBtn": function(event){
         Rooms.remove(this._id);
@@ -267,4 +273,3 @@ Meteor.autorun(function() {
     Meteor.subscribe("players");
     Meteor.subscribe("rooms");
 });
-

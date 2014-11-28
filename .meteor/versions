@@ -39,6 +39,7 @@ meteorhacks:inject-initial@1.0.0
 meteorhacks:zones@1.4.0
 minifiers@1.1.2
 minimongo@1.0.5
+mizzao:bootboxjs@4.3.0
 mizzao:build-fetcher@0.2.0
 mizzao:jquery-ui@1.11.2
 mobile-status-bar@1.0.1
