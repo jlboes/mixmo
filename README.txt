@@ -15,3 +15,5 @@ Each player receives 6 letters.
 At the signal, all players turn their tiles and try to make crosswords with them.
 When a player has used all his letters he says Mixmo
 Each player picks two more letters and the game goes on until the all face-down letters are used.
+
+[![Build Status](https://travis-ci.org/jlboes/mixmo.svg?branch=master)](https://travis-ci.org/jlboes/mixmo)
