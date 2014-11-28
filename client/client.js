@@ -144,6 +144,13 @@ Template.entryfield.helpers({
     },
     canDelete : function(){
         return this.host == Meteor.userId();
+    },
+    inRoom : function(){
+        return Rooms.find({ "players.id" : Meteor.userId()}).count();
+    },
+    players : function(){
+        var room = Rooms.findOne({ "players.id" : Meteor.userId()});
+        return room.players;
     }
 });
 
@@ -232,6 +239,10 @@ Template.entryfield.events = {
     },
     "click .removeRoomBtn": function(event){
         Rooms.remove(this._id);
+    },
+    "click .joinBtn":function(event){
+        console.log(this._id);
+        Meteor.call('joinRoom', this._id);
     }
 }
 

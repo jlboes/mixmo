@@ -114,6 +114,9 @@ Meteor.startup(function () {
         },
         createRoom: function(name){
             Room.createNewRoom(Meteor.userId(), name);
+        },
+        joinRoom: function(idRoom){
+            Room.joinRoom(Meteor.userId(), idRoom)
         }
     });
 
