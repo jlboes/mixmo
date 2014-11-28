@@ -5,8 +5,10 @@
 
 meteor-platform
 insecure
-bootstrap
 mrt:jquery-ui-bootstrap
 jquery
 mizzao:jquery-ui
 meteorhacks:zones
+accounts-password
+ian:bootstrap-3
+ian:accounts-ui-bootstrap-3
