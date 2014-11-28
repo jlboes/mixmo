@@ -1,0 +1,8 @@
+language: node_js
+node_js:
+  - "0.10"
+before_install:
+  - "curl -L https://install.meteor.com/ | sh"
+services:
+  - mongodb
+script: meteor list
