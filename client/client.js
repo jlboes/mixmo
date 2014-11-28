@@ -137,8 +137,7 @@ function getLetters(){
 
 Template.entryfield.helpers({
     canShowInput : function(){
-        return Session.get("playerName") == 'undefined'
-            || Session.get("playerName") == '';
+        return Meteor.userId() == null;
     }
 });
 
