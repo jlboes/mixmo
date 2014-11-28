@@ -40,7 +40,7 @@
     {{else}}
         <ul>
         {{#each rooms}}
-            <li>{{name}} - <button>Join</button></li>
+            <li>{{name}} - <button>Join</button> {{#if canDelete}}<button class="removeRoomBtn" id="{{host}}">Remove</button>{{/if}}</li>
         {{/each}}
         </ul>
         <button id="createRoom">Create room</button>

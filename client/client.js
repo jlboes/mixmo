@@ -141,6 +141,9 @@ Template.entryfield.helpers({
     },
     rooms : function(){
         return Rooms.find({});
+    },
+    canDelete : function(){
+        return this.host == Meteor.userId();
     }
 });
 
@@ -220,6 +223,9 @@ Template.entryfield.events = {
     // }
     "click #createRoom":function(event){
         Meteor.call('createRoom', "testRoom");
+    },
+    "click .removeRoomBtn": function(event){
+        Rooms.remove(this._id);
     }
 }
 
