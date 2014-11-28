@@ -138,6 +138,9 @@ function getLetters(){
 Template.entryfield.helpers({
     canShowInput : function(){
         return Meteor.userId() == null;
+    },
+    rooms : function(){
+        return Rooms.find({});
     }
 });
 
@@ -199,21 +202,24 @@ Template.playground.rendered = function(){
 */
 
 Template.entryfield.events = {
-    "keydown #name": function(event){
-        if(event.which == 13){
-            var name = document.getElementById('name');
-            // Submit the form
-            if(name.value != ''){
-                Session.set("playerName", name.value);
-                Meteor.call('addPlayer', name.value, function(err, response) {
-                    console.log('New player : ' + name.value);
-                    if(err) {
-                        Session.set("playerName", "");
-                    } 
-                });
-                name.value = '';
-            }
-        }
+    // "keydown #name": function(event){
+    //     if(event.which == 13){
+    //         var name = document.getElementById('name');
+    //         // Submit the form
+    //         if(name.value != ''){
+    //             Session.set("playerName", name.value);
+    //             Meteor.call('addPlayer', name.value, function(err, response) {
+    //                 console.log('New player : ' + name.value);
+    //                 if(err) {
+    //                     Session.set("playerName", "");
+    //                 } 
+    //             });
+    //             name.value = '';
+    //         }
+    //     }
+    // }
+    "click #createRoom":function(event){
+        Meteor.call('createRoom', "testRoom");
     }
 }
 
@@ -253,5 +259,6 @@ Template.players.events = ({
 Meteor.autorun(function() {
     Meteor.subscribe("letters", Session.get("playerName"));
     Meteor.subscribe("players");
+    Meteor.subscribe("rooms");
 });
 

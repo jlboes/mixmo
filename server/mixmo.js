@@ -44,6 +44,9 @@ Meteor.startup(function () {
     Meteor.publish("players", function() {
         return Players.find();
     })
+    Meteor.publish("rooms", function() {
+        return Rooms.find();
+    })
 
 
     return Meteor.methods({
@@ -108,6 +111,9 @@ Meteor.startup(function () {
         },
         restart : function() {
             alphabet = createGameLetters();
+        },
+        createRoom: function(name){
+            Room.createNewRoom(Meteor.userId(), name);
         }
     });
 
