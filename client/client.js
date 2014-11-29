@@ -237,7 +237,10 @@ Template.entryfield.events = {
         bootbox.prompt("What is the name of the room?", function(result) {                
           if (result === null || result.trim().length <1) {
           } else {
-            Meteor.call('createRoom', result);
+            Meteor.call('createRoom', result, function(err, response){
+
+                
+            });
           }
         });
     },
@@ -250,6 +253,10 @@ Template.entryfield.events = {
     "click .leaveRoom":function(event){
         var room = Rooms.findOne({ "players.id" : this.id});
         Meteor.call("leaveRoom", room._id);
+    },
+    "click #startGame": function(event){
+        var room = Rooms.findOne({ "players.id" : Meteor.userId()});
+        Meteor.call("areYouReady", room._id)
     }
 }
 
@@ -291,3 +298,13 @@ Meteor.autorun(function() {
     Meteor.subscribe("players");
     Meteor.subscribe("rooms");
 });
+
+var roomQuery = Rooms.find({ "players.id" : Meteor.userId()});
+var handle = roomQuery.observeChanges({
+  changed: function (id, gameStart) {
+    bootbox.confirm("Are you sure?", function(result) {
+      console.log(result);
+    }); 
+  }
+});
+

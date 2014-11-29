@@ -120,6 +120,9 @@ Meteor.startup(function () {
         },
         leaveRoom: function(idRoom){
             Room.leaveRoom(Meteor.userId(), idRoom);
+        },
+        areYouReady: function(idRoom){
+            Rooms.update(idRoom, {$set: {gameStart: true}});
         }
     });
 
