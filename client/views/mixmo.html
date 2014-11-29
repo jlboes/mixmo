@@ -34,27 +34,28 @@
 </body>
 
 <template name="entryfield">
-    {{#if inRoom}}
-        <div class="container">
-            <div class="playerLobbyList">
-                <ul>
-                    {{#each players}}
-                        <li>{{name}}</li>
-                    {{/each}}
-                </ul>
-            </div>
-        </div>
-    {{else}}
-        {{#if canShowInput}}
+    {{#if canShowInput}}
             <!-- <input type="text" id="name" placeholder="Login" />  -->
-            <p>Connexion obligatoire pour jouer</p>
+        <p>Connexion obligatoire pour jouer</p>
+    {{else}}
+        {{#if inRoom}}
+            <div class="container">
+                <div class="playerLobbyList">
+                    <ul>
+                        {{#each players}}
+                            <li>{{name}}  {{#if canLeave}}<button class="leaveRoom">Leave the room</button>{{/if}}</li>
+                        {{/each}}
+                    </ul>
+                    <button id="startGame">Start !</button>
+                </div>
+            </div>
         {{else}}
-            <ul>
-            {{#each rooms}}
-                <li>{{name}} - <button class="joinBtn">Join</button> {{#if canDelete}}<button class="removeRoomBtn" id="{{host}}">Remove</button>{{/if}}</li>
-            {{/each}}
-            </ul>
-            <button id="createRoom">Create room</button>
+                <ul>
+                {{#each rooms}}
+                    <li>{{name}} - <button class="joinBtn">Join</button> {{#if canDelete}}<button class="removeRoomBtn" id="{{host}}">Remove</button>{{/if}}</li>
+                {{/each}}
+                </ul>
+                <button id="createRoom">Create room</button>
         {{/if}}
     {{/if}}
 </template>
