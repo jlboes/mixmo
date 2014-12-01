@@ -1,15 +1,17 @@
 [![Build Status](https://travis-ci.org/jlboes/mixmo.svg?branch=master)](https://travis-ci.org/jlboes/mixmo)
 
 
-===== Importer un dictionnaire =====
+## Importer un dictionnaire
 
+```
 mongoimport -h localhost:3001 --db meteor --collection dictionary --type json --file mots_fr_utf8.json
+```
 
-===== The Game =====
+## The Game
 Components of the game:
-120 tiles carved with letters and a Gangster
-1 rulebook
-1 storing bag
+- 120 tiles carved with letters and a Gangster
+- 1 rulebook
+- 1 storing bag
 
 It's a quick letters game.
 The letter tiles are all in the middle of the table face down.
