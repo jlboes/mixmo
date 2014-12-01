@@ -297,14 +297,17 @@ Meteor.autorun(function() {
     Meteor.subscribe("letters", Session.get("playerName"));
     Meteor.subscribe("players");
     Meteor.subscribe("rooms");
+
+    var roomQuery = Rooms.find({ "players.id" : Meteor.userId()});
+    var handle = roomQuery.observeChanges({
+      changed: function (id, gameStart) {
+        bootbox.confirm("Are you sure?", function(result) {
+          console.log(result);
+        }); 
+      }
+    });
+
 });
 
-var roomQuery = Rooms.find({ "players.id" : Meteor.userId()});
-var handle = roomQuery.observeChanges({
-  changed: function (id, gameStart) {
-    bootbox.confirm("Are you sure?", function(result) {
-      console.log(result);
-    }); 
-  }
-});
+
 
