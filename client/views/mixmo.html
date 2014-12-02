@@ -40,10 +40,23 @@
     {{else}}
         {{#if inRoom}}
             <div class="container">
+                <h2>{{room.name}}</h2>
                 <div class="playerLobbyList">
                     <ul>
-                        {{#each players}}
-                            <li>{{name}}  {{#if canLeave}}<button class="leaveRoom">Leave the room</button>{{/if}}</li>
+                        {{#each room.players}}
+                            <li>
+                                {{name}}
+                                {{#if ready}} 
+                                    pret !
+                                    {{else}}
+                                        {{#if me}} 
+                                            <button class="readyBtn">Go!</button>
+                                        {{else}}
+                                            <p>En attente du joueur</p>
+                                        {{/if}}
+                                {{/if}}
+                                {{#if canLeave}}<button class="leaveRoom">Leave the room</button>{{/if}}
+                            </li>
                         {{/each}}
                     </ul>
                     <button id="startGame">Start !</button>

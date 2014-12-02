@@ -123,6 +123,10 @@ Meteor.startup(function () {
         },
         areYouReady: function(idRoom){
             Rooms.update(idRoom, {$set: {gameStart: true}});
+        },
+        playerReady: function(idRoom){
+            console.log("player ready / server");
+            Room.playerReady(idRoom, Meteor.userId());
         }
     });
 

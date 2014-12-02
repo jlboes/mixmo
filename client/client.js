@@ -148,13 +148,19 @@ Template.entryfield.helpers({
     inRoom : function(){
         return Rooms.find({ "players.id" : Meteor.userId()}).count();
     },
-    players : function(){
+    room : function(){
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
-        return room.players;
+        return room;
     },
     canLeave : function (){
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
-        return (room.host != Meteor.userId()) && (this.id == Meteor.userId());
+        return this.id == Meteor.userId();
+    },
+    ready : function(){
+        return Rooms.find({ "players" : { $elemMatch: {id: this.id, status : "ready"}}}).count();
+    },
+    me : function(){
+        return this.id == Meteor.userId();
     }
 });
 
@@ -257,6 +263,11 @@ Template.entryfield.events = {
     "click #startGame": function(event){
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
         Meteor.call("areYouReady", room._id)
+    },
+    "click .readyBtn": function(event){
+        console.log(this.id);
+        var room = Rooms.findOne({ "players.id" : Meteor.userId()});
+        Meteor.call("playerReady", room._id);
     }
 }
 
@@ -298,6 +309,8 @@ Meteor.autorun(function() {
     Meteor.subscribe("players");
     Meteor.subscribe("rooms");
 
+
+    /** Game start Handler **/
     var roomQuery = Rooms.find({ "players.id" : Meteor.userId()});
     var handle = roomQuery.observeChanges({
       changed: function (id, gameStart) {
