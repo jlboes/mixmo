@@ -135,35 +135,6 @@ function getLetters(){
 |------------------------------------------------------------------------------
 */
 
-Template.entryfield.helpers({
-    canShowInput : function(){
-        return Meteor.userId() == null;
-    },
-    rooms : function(){
-        return Rooms.find({});
-    },
-    canDelete : function(){
-        return this.host == Meteor.userId();
-    },
-    inRoom : function(){
-        return Rooms.find({ "players.id" : Meteor.userId()}).count();
-    },
-    room : function(){
-        var room = Rooms.findOne({ "players.id" : Meteor.userId()});
-        return room;
-    },
-    canLeave : function (){
-        var room = Rooms.findOne({ "players.id" : Meteor.userId()});
-        return this.id == Meteor.userId();
-    },
-    ready : function(){
-        return Rooms.find({ "players" : { $elemMatch: {id: this.id, status : "ready"}}}).count();
-    },
-    me : function(){
-        return this.id == Meteor.userId();
-    }
-});
-
 Template.players.helpers({
     players : function(){
         return Players.find({}, { sort: { time: -1 }});
@@ -221,55 +192,6 @@ Template.playground.rendered = function(){
 |------------------------------------------------------------------------------
 */
 
-Template.entryfield.events = {
-    // "keydown #name": function(event){
-    //     if(event.which == 13){
-    //         var name = document.getElementById('name');
-    //         // Submit the form
-    //         if(name.value != ''){
-    //             Session.set("playerName", name.value);
-    //             Meteor.call('addPlayer', name.value, function(err, response) {
-    //                 console.log('New player : ' + name.value);
-    //                 if(err) {
-    //                     Session.set("playerName", "");
-    //                 } 
-    //             });
-    //             name.value = '';
-    //         }
-    //     }
-    // }
-    "click #createRoom":function(event){
-        
-        bootbox.prompt("What is the name of the room?", function(result) {                
-          if (result === null || result.trim().length <1) {
-          } else {
-            Meteor.call('createRoom', result, function(err, response){
-
-                
-            });
-          }
-        });
-    },
-    "click .removeRoomBtn": function(event){
-        Rooms.remove(this._id);
-    },
-    "click .joinBtn":function(event){
-        Meteor.call('joinRoom', this._id);
-    },
-    "click .leaveRoom":function(event){
-        var room = Rooms.findOne({ "players.id" : this.id});
-        Meteor.call("leaveRoom", room._id);
-    },
-    "click #startGame": function(event){
-        var room = Rooms.findOne({ "players.id" : Meteor.userId()});
-        Meteor.call("areYouReady", room._id)
-    },
-    "click .readyBtn": function(event){
-        console.log(this.id);
-        var room = Rooms.findOne({ "players.id" : Meteor.userId()});
-        Meteor.call("playerReady", room._id);
-    }
-}
 
 Template.wordInput.events = {
     "click #mixmo":function(event){
@@ -308,18 +230,6 @@ Meteor.autorun(function() {
     Meteor.subscribe("letters", Session.get("playerName"));
     Meteor.subscribe("players");
     Meteor.subscribe("rooms");
-
-
-    /** Game start Handler **/
-    var roomQuery = Rooms.find({ "players.id" : Meteor.userId()});
-    var handle = roomQuery.observeChanges({
-      changed: function (id, gameStart) {
-        bootbox.confirm("Are you sure?", function(result) {
-          console.log(result);
-        }); 
-      }
-    });
-
 });
 
 
