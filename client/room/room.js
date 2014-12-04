@@ -34,6 +34,9 @@ Template.entryfield.helpers({
         // Display "Start Game" btn if all players in room are ready AND current user is host
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
         return (room.host == Meteor.userId()) && (_.where(room.players, { status: "ready"}).length == room.players.length);
+    },
+    roomOpen: function(){
+        return this.status == ROOM_OPEN;
     }
 });
 

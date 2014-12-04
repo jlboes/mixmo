@@ -31,7 +31,13 @@
             <h2 id="roomTitle">Rooms</h2>
                 <ul>
                 {{#each rooms}}
-                    <li>{{name}} - <button class="joinBtn">Join</button> {{#if canDelete}}<button class="removeRoomBtn" id="{{host}}">Remove</button>{{/if}}</li>
+                    <li>{{name}} - 
+                    {{#if roomOpen}}
+                        <button class="joinBtn">Join</button> 
+                        {{else}}
+                        <p>La room est fermée</p>
+                    {{/if}}
+                    {{#if canDelete}}<button class="removeRoomBtn" id="{{host}}">Remove</button>{{/if}}</li>
                 {{/each}}
                 </ul>
                 <button id="createRoom">Create room</button>
