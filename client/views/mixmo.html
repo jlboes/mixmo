@@ -25,9 +25,6 @@
       <div class="row">
         {{> entryfield}}
       </div>
-      <div class="row">
-        {{> players}}
-      </div>
       <div class="row center-block">
         <div id="game">
           {{> wordInput}}
@@ -43,20 +40,9 @@
 </body>
 
 
-<template name="players">
-    <p>
-        {{#each players}}
-            <label class="playerList" id="{{_id}}"><strong>{{login}}</strong>{{#if canDelete}}    X{{/if}}</label>
-        {{/each}}
-    </p>
-</template>
-
 <template name="wordInput">
     {{#if inGame}}
         <button id="mixmo">mixmo !</button>
-        <button id="restartGame">Restart</button>
-    {{else}}
-        <button id="startGame">Start</button>
     {{/if}}
 </template>
 

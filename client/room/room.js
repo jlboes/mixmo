@@ -1,6 +1,6 @@
 /*
 |------------------------------------------------------------------------------
-|   TEMPLATE.HELPERS 
+|   TEMPLATE.HELPERS
 |------------------------------------------------------------------------------
 */
 
@@ -44,19 +44,19 @@ Template.entryfield.helpers({
 
 /*
 |------------------------------------------------------------------------------
-|   TEMPLATE.EVENTS 
+|   TEMPLATE.EVENTS
 |------------------------------------------------------------------------------
 */
 
-Template.entryfield.events = {
+Template.entryfield.events({
     "click #createRoom":function(event){
-        
-        bootbox.prompt("What is the name of the room?", function(result) {                
+
+        bootbox.prompt("What is the name of the room?", function(result) {
           if (result === null || result.trim().length <1) {
           } else {
             Meteor.call('createRoom', result, function(err, response){
 
-                
+
             });
           }
         });
@@ -80,4 +80,4 @@ Template.entryfield.events = {
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
         Meteor.call("playerReady", room._id);
     }
-}
+});

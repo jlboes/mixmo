@@ -63,7 +63,7 @@ function getVwordTds(item){
     while((letter!= "" && letter!= undefined) && safety){
         //console.log('html : '+letter);
         vWord.unshift(letterTd);
-        
+
         prevTr = prevTr.prev('tr');
         letterTd = prevTr.find('td').eq(cellIndex);
         letter = letterTd.html();
@@ -73,7 +73,7 @@ function getVwordTds(item){
             safety = false;
         }
     }
-    
+
     vWord.push(item);
 
     var nextTr = item.parent().next('tr');
@@ -108,7 +108,7 @@ function getHwordTds(item){
     }
     hWord.push(item);
     var nextTd = item.next('td');
-    while(nextTd.html()!=""){ 
+    while(nextTd.html()!=""){
         hWord.push(nextTd);
         nextTd = nextTd.next('td');
     }
@@ -131,19 +131,9 @@ function getLetters(){
 
 /*
 |------------------------------------------------------------------------------
-|   TEMPLATE.HELPERS 
+|   TEMPLATE.HELPERS
 |------------------------------------------------------------------------------
 */
-
-Template.players.helpers({
-    players : function(){
-        return Players.find({}, { sort: { time: -1 }});
-    },
-    canDelete : function(){
-        return this.login == Session.get("playerName");
-    }
-});
-
 
 Template.currentWordTable.helpers({
     currentWord : function(){
@@ -161,11 +151,15 @@ Template.wordInput.helpers({
 Template.playground.rendered = function(){
     /*** RENDER MAX GRID ***/
     var tbody = jQuery('tbody');
-    
-    for(var i=0; i<60; i++){
-        var tds = jQuery('<tr>').addClass('gridTableTr connectedSortable')
-        for(var j=0; j<60; j++){
-            var td = jQuery('<td>').addClass('ui-state-disabled');
+    var tableSize = 40; // Number of cells in each axis
+    for(var i=1; i <= tableSize; i++){
+        var tds = jQuery('<tr>').addClass('gridTableTr connectedSortable');
+        for(var j=1; j <= tableSize; j++){
+            var td = jQuery('<td>')
+                      .attr('data-x', j)
+                      .attr('data-y', i)
+                      .attr('title', '('+j+','+i+')')
+                      .addClass('ui-state-disabled');
             tds.append(td) ;
         }
 
@@ -175,9 +169,9 @@ Template.playground.rendered = function(){
 
     // Make the grid sortable
     jQuery( "#gridTable .connectedSortable" ).sortable({
-            items: "td", 
-            connectWith: ".connectedSortable", 
-            placeholder: "active",   
+            items: "td",
+            connectWith: ".connectedSortable",
+            placeholder: "active",
             stop: function(event, ui) {
                     isGridValid(event, ui);
             },
@@ -188,7 +182,7 @@ Template.playground.rendered = function(){
 
 /*
 |------------------------------------------------------------------------------
-|   TEMPLATE.EVENTS 
+|   TEMPLATE.EVENTS
 |------------------------------------------------------------------------------
 */
 
@@ -198,7 +192,7 @@ Template.wordInput.events = {
         getLetters();
     },
     "click #startGame":function(event){
-        if( Players.find({}).count()>=2 
+        if( Players.find({}).count()>=2
             && !(Session.get("playerName") == 'undefined' || Session.get("playerName") == '')){
 
             inGame.set(true);
@@ -216,21 +210,8 @@ Template.wordInput.events = {
     }
 }
 
-Template.players.events = ({
-    "click .playerList": function(event){
-        if (this.login === Session.get("playerName")) {
-            console.log("remove "+this._id);
-            Players.remove(this._id);
-            Session.set("playerName", "");
-        }
-    }
-});
-
 Meteor.autorun(function() {
     Meteor.subscribe("letters", Session.get("playerName"));
     Meteor.subscribe("players");
     Meteor.subscribe("rooms");
 });
-
-
-

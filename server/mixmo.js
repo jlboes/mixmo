@@ -58,7 +58,7 @@ Meteor.startup(function () {
             // if empty game over else
             Players.find().forEach(function (player) {
                 // get random letter && remove letter from pool
-           
+
                 if( alphabet.length>1){
                     CurrentWord.insert({player: player.login, letter: alphabet.pop(), time: Date.now()});
                     CurrentWord.insert({player: player.login, letter: alphabet.pop(), time: Date.now()});
@@ -97,18 +97,6 @@ Meteor.startup(function () {
 
             return status && status2;
         },
-        addPlayer : function(name) {
-            Players.update({
-                login: name
-            }, {
-                $set: {
-                    time: Date.now()
-                }
-            }, {
-                multi: false,
-                upsert: true
-            });
-        },
         restart : function() {
             alphabet = createGameLetters();
         },
@@ -131,4 +119,3 @@ Meteor.startup(function () {
     });
 
 });
-
