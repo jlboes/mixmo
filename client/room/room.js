@@ -73,7 +73,7 @@ Template.entryfield.events({
     },
     "click #startGame": function(event){
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
-        Meteor.call("areYouReady", room._id)
+        Meteor.call("startGame", room._id)
     },
     "click .readyBtn": function(event){
         console.log(this.id);
