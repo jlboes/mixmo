@@ -22,11 +22,10 @@ Template.entryfield.helpers({
         return room;
     },
     canLeave : function (){
-        var room = Rooms.findOne({ "players.id" : Meteor.userId()});
-        return this.id == Meteor.userId();
+        return Rooms.find({ "players" : { $elemMatch: {id: this.id, status : STATUS_WAITING}}}).count();
     },
     ready : function(){
-        return Rooms.find({ "players" : { $elemMatch: {id: this.id, status : "ready"}}}).count();
+        return Rooms.find({ "players" : { $elemMatch: {id: this.id, status : STATUS_READY}}}).count();
     },
     me : function(){
         return this.id == Meteor.userId();
