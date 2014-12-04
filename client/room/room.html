@@ -24,10 +24,11 @@
                             </li>
                         {{/each}}
                     </ul>
-                    <button id="startGame">Start !</button>
+                    {{#if canStart}}<button id="startGame">Start !</button>{{/if}}
                 </div>
             </div>
         {{else}}
+            <h2 id="roomTitle">Rooms</h2>
                 <ul>
                 {{#each rooms}}
                     <li>{{name}} - <button class="joinBtn">Join</button> {{#if canDelete}}<button class="removeRoomBtn" id="{{host}}">Remove</button>{{/if}}</li>

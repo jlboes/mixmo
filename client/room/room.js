@@ -30,6 +30,11 @@ Template.entryfield.helpers({
     },
     me : function(){
         return this.id == Meteor.userId();
+    },
+    canStart: function(){
+        // Display "Start Game" btn if all players in room are ready AND current user is host
+        var room = Rooms.findOne({ "players.id" : Meteor.userId()});
+        return (room.host == Meteor.userId()) && (_.where(room.players, { status: "ready"}).length == room.players.length);
     }
 });
 
