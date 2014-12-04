@@ -1,11 +1,15 @@
 /* CSS declarations go here */
 
 td{
-    padding : 4px;
+    
     background-color:lightgrey;
     border: solid 1px lightseagreen;
-    width:25px;
-    height:25px;
+    width:30px;
+    height:30px;
+    
+    color: #333;
+	background-color: #B8ACA6;
+	text-shadow: 0px 1px 0px rgba(255,255,255,.5); /* 50% white from bottom */
 }
 
 .active{
@@ -18,3 +22,20 @@ td{
 .notValid{
     background:lightpink !important;
 }
+
+#availableLetter{
+    min-width: 40%;
+    border:solid 1px black;
+    min-height:25px;
+    margin-top:25px;
+    font-size: 25px;
+	font-family: "Century Gothic", "Helvetica", sans-serif;
+	font-weight: bold;
+    background-color:#C3A799;
+}
+
+#currentWordTable{
+    
+	text-align: center;
+}
+

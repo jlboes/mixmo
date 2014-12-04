@@ -47,13 +47,16 @@
 </template>
 
 <template name="currentWordTable">
-    <table id="currentWordTable" class="connectedSortable">
-        <tr id="currentwordTR">
-            {{#each currentWord}}
-            <td id="{{_id}}" class="currentwordTds ui-widget-content">{{letter}}</td>
-            {{/each}}
-        </tr>
-    </table>
+    <div id="availableLetter" class="container">
+        <table id="currentWordTable" class="connectedSortable">
+            <tr id="currentwordTR"><td>E</td></tr>
+            <!--<tr id="currentwordTR">
+                {{#each currentWord}}
+                <td id="{{_id}}" class="currentwordTds ui-widget-content">{{letter}}</td>
+                {{/each}}
+            </tr>-->
+        </table>
+    </div>
     <br/>
 </template>
 
