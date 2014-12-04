@@ -4,7 +4,7 @@
 ## Importer un dictionnaire
 
 ```
-mongoimport -h localhost:3001 --db meteor --collection dictionary --type json --file mots_fr_utf8.json
+mongoimport -h localhost:3001 --db meteor --collection dictionary --type json --file private/mots_fr_utf8.json
 ```
 
 ## The Game

@@ -3,36 +3,44 @@
 </head>
 
 <body>
-
      <nav class="navbar navbar-default" role="navigation">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Mixmo</a>
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-                {{> loginButtons}} <!-- here -->
-            </ul>
+        <div class="container">
+          <div class="navbar-header">
+              <a class="navbar-brand" href="#">Mixmo</a>
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+              </button>
+          </div>
+          <div class="navbar-collapse collapse">
+              <ul class="nav navbar-nav navbar-right">
+                  {{> loginButtons}} <!-- here -->
+              </ul>
+          </div>
         </div>
     </nav>
+    <div class="container">
+      <div class="row">
+        {{> entryfield}}
+      </div>
+      <div class="row">
+        {{> players}}
+      </div>
+      <div class="row center-block">
+        <div id="game">
+          {{> wordInput}}
+          {{> currentWordTable}}
+          {{> playground}}
+        </div>
+      </div>
+      <hr>
+      <footer>
 
-  {{> entryfield}}
-
-  {{> players}}
-
-
-  <div id="game">
-      {{> wordInput}}
-      {{> currentWordTable}}
-      {{> playground}}
+      </footer>
     </div>
 </body>
-
 
 
 <template name="players">
@@ -64,10 +72,8 @@
 </template>
 
 <template name="playground">
-
-<table id="gridTable">
-    <tbody >
-    </tbody>
-</table>
-
+  <table id="gridTable">
+      <tbody >
+      </tbody>
+  </table>
 </template>
