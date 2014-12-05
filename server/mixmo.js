@@ -48,22 +48,28 @@ Meteor.startup(function () {
         return Rooms.find();
     })
 
+    Meteor.publish('notifications', function() {
+        return Notifications.find();
+    });
 
     return Meteor.methods({
         clearCurrentWord: function () {
     	    return CurrentWord.remove({});
     	},
-        getTwoLetters: function(playerName){
+        getTwoLetters: function(userId){
             // check if pool is not empty
             // if empty game over else
-            Players.find().forEach(function (player) {
+            /*Players.find().forEach(function (player) {
                 // get random letter && remove letter from pool
 
                 if( alphabet.length>1){
                     CurrentWord.insert({player: player.login, letter: alphabet.pop(), time: Date.now()});
                     CurrentWord.insert({player: player.login, letter: alphabet.pop(), time: Date.now()});
                 }
-            });
+            });*/
+            
+            console.log("Call notification insert");
+            createInfoNotification(userId, "Mixmo !!");
             //else game over
             return null;
         },

@@ -116,9 +116,10 @@ function getHwordTds(item){
     return hWord;
 }
 
-function getLetters(){
-    Meteor.call('getTwoLetters',Session.get("playerName"), function(err, response) {
+function getLetters(userId){
+    Meteor.call('getTwoLetters',userId, function(err, response) {
         console.log('got new letters');
+        /*
         jQuery( "#currentWordTable" ).sortable({
             items: "td",
             connectWith: ".connectedSortable",
@@ -126,6 +127,7 @@ function getLetters(){
                 isGridValid(event, ui);
             }
         }).disableSelection();
+        */
     });
 }
 
@@ -189,7 +191,8 @@ Template.playground.rendered = function(){
 
 Template.wordInput.events = {
     "click #mixmo":function(event){
-        getLetters();
+        console.log("get letters");
+        getLetters(Meteor.userId());
     },
     "click #startGame":function(event){
         if( Players.find({}).count()>=2
@@ -214,4 +217,12 @@ Meteor.autorun(function() {
     Meteor.subscribe("letters", Session.get("playerName"));
     Meteor.subscribe("players");
     Meteor.subscribe("rooms");
+    Meteor.subscribe('notifications');
+    
+    var notificationsQuery = Notifications.find({ "userId" : { $not: Meteor.userId()}});
+    var handle = notificationsQuery.observeChanges({
+        added: function (id, message) {
+          console.log("get new message");
+      }
+    });
 });

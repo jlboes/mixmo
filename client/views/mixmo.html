@@ -21,6 +21,7 @@
           </div>
         </div>
     </nav>
+    {{> notifications}}
     <div class="container">
       <div class="row">
         {{> entryfield}}
@@ -40,10 +41,10 @@
 </body>
 
 
+
+
 <template name="wordInput">
-    {{#if inGame}}
         <button id="mixmo">mixmo !</button>
-    {{/if}}
 </template>
 
 <template name="currentWordTable">

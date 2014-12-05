@@ -39,3 +39,46 @@ td{
 	text-align: center;
 }
 
+/*Container*/
+.notifications{
+    z-index: 999;
+    position: absolute;
+	width:400px;
+	min-height:400px;
+	height:auto;	
+}
+
+.box h3{
+	text-align:center;
+	position:relative;
+}
+.box {
+    border: 1px solid black;
+	width:70%;
+	background:#474747;
+	margin-bottom:20px;
+	margin-left: 20px;
+	color: #fff;
+}
+
+.notification{
+	-webkit-box-shadow: 0 10px 6px -6px #777;
+	   -moz-box-shadow: 0 10px 6px -6px #777;
+	        box-shadow: 0 10px 6px -6px #777;
+}
+
+[class*='close-'] {
+  color: #777;
+  font: 17px/100% arial, sans-serif;
+  text-decoration: none;
+  text-shadow: 0 1px 0 #fff;
+  margin: 5px;
+  float: right
+}
+.close-thik:after {
+  content: '✖'; /* UTF-8 symbol */
+  cursor:pointer;
+}
+.close-thik:hover{
+    color:#fff;
+}
