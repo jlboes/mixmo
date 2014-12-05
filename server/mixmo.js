@@ -30,16 +30,10 @@ function shuffle(array) {
 
 Meteor.startup(function () {
 // code to run on server at startup
-    CurrentWord.remove({});
 
     var Dictionnary = new Meteor.Collection('dictionary');
 
     var alphabet = createGameLetters();
-
-
-    Meteor.publish("letters", function(playerName) {
-        return CurrentWord.find({player: playerName});
-    })
 
     Meteor.publish("players", function() {
         return Players.find();
@@ -48,11 +42,7 @@ Meteor.startup(function () {
         return Rooms.find();
     })
 
-
     return Meteor.methods({
-        clearCurrentWord: function () {
-    	    return CurrentWord.remove({});
-    	},
         getTwoLetters: function(playerName){
             // check if pool is not empty
             // if empty game over else
@@ -60,42 +50,23 @@ Meteor.startup(function () {
                 // get random letter && remove letter from pool
 
                 if( alphabet.length>1){
-                    CurrentWord.insert({player: player.login, letter: alphabet.pop(), time: Date.now()});
-                    CurrentWord.insert({player: player.login, letter: alphabet.pop(), time: Date.now()});
+                    //CurrentWord.insert({player: player.login, letter: alphabet.pop(), time: Date.now()});
+                    //CurrentWord.insert({player: player.login, letter: alphabet.pop(), time: Date.now()});
                 }
             });
             //else game over
             return null;
         },
-        isWordValid: function(wordTotTest1, wordTotTest2){
+        validateWords: function(wordTotTest1, wordTotTest2){
 
-            var status = false;
-            if(wordTotTest1.length>1)
-            {
-
-                var doc = Dictionnary.findOne({word:wordTotTest1});
-                if(doc!= undefined)
-                {
-                    status = true;
-                }
-            } else{
-                status = true;
+            for(var i = 0, len = items.length; i < len; i++) {
+              var word = Dictionnary.findOne({ word:items[i]});
+              if(!word){
+                  return false;
+              }
             }
 
-            var status2 = false;
-            if(wordTotTest2.length>1)
-            {
-
-                var doc = Dictionnary.findOne({word:wordTotTest2});
-                if(doc!= undefined)
-                {
-                    status2 = true;
-                }
-            } else{
-                status2 = true;
-            }
-
-            return status && status2;
+            return true;
         },
         restart : function() {
             alphabet = createGameLetters();

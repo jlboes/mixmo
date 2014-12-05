@@ -28,7 +28,6 @@
       <div class="row center-block">
         <div id="game">
           {{> wordInput}}
-          {{> currentWordTable}}
           {{> playground}}
         </div>
       </div>
@@ -46,18 +45,16 @@
     {{/if}}
 </template>
 
-<template name="currentWordTable">
-    <table id="currentWordTable" class="connectedSortable">
-        <tr id="currentwordTR">
-            {{#each currentWord}}
-            <td id="{{_id}}" class="currentwordTds ui-widget-content">{{letter}}</td>
-            {{/each}}
-        </tr>
-    </table>
-    <br/>
-</template>
+
 
 <template name="playground">
+  <table id="current-words" >
+    <tr id="current-word-line">
+        {{#each sampleletters}}
+        <td class="letter" data-letter="{{value}}">{{value}}</td>
+        {{/each}}
+    </tr>
+  </table>
   <table id="gridTable">
       <tbody >
       </tbody>
