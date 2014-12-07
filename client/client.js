@@ -116,8 +116,8 @@ function getHwordTds(item){
     return hWord;
 }
 
-function getLetters(userId){
-    Meteor.call('getTwoLetters',userId, function(err, response) {
+function getLetters(roomId, player){
+    Meteor.call('getTwoLetters',roomId, player, function(err, response) {
         console.log('got new letters');
         /*
         jQuery( "#currentWordTable" ).sortable({
@@ -192,7 +192,9 @@ Template.playground.rendered = function(){
 Template.wordInput.events = {
     "click #mixmo":function(event){
         console.log("get letters");
-        getLetters(Meteor.userId());
+        var room = Rooms.findOne({ "players.id" : Meteor.userId()});
+        var player = _.findWhere(room.players, {id: Meteor.userId()});
+        getLetters(room._id, player);
     },
     "click #startGame":function(event){
         if( Players.find({}).count()>=2
@@ -218,11 +220,4 @@ Meteor.autorun(function() {
     Meteor.subscribe("players");
     Meteor.subscribe("rooms");
     Meteor.subscribe('notifications');
-    
-    var notificationsQuery = Notifications.find({ "userId" : { $not: Meteor.userId()}});
-    var handle = notificationsQuery.observeChanges({
-        added: function (id, message) {
-          console.log("get new message");
-      }
-    });
 });

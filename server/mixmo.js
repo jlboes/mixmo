@@ -56,7 +56,7 @@ Meteor.startup(function () {
         clearCurrentWord: function () {
     	    return CurrentWord.remove({});
     	},
-        getTwoLetters: function(userId){
+        getTwoLetters: function(roomId, player){
             // check if pool is not empty
             // if empty game over else
             /*Players.find().forEach(function (player) {
@@ -68,8 +68,7 @@ Meteor.startup(function () {
                 }
             });*/
             
-            console.log("Call notification insert");
-            createInfoNotification(userId, "Mixmo !!");
+            createInfoNotification(roomId, player, player.name+" a fait Mixmo !!");
             //else game over
             return null;
         },
@@ -121,6 +120,11 @@ Meteor.startup(function () {
         playerReady: function(idRoom){
             console.log("player ready / server");
             Room.playerReady(idRoom, Meteor.userId());
+        },
+        /** NOTIFICATIONS **/
+        readNotifications: function(idNotif){
+            console.log(idNotif);
+            Notifications.update(idNotif, {$set: {read: true}});
         }
     });
 
