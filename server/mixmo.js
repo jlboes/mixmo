@@ -17,16 +17,7 @@ Meteor.startup(function () {
     });
 
     return Meteor.methods({
-        clearCurrentWord: function () {
-    	    return CurrentWord.remove({});
-    	},
-        getTwoLetters: function(roomId, player){
-            
-            createInfoNotification(roomId, player, player.name+" a fait Mixmo !!");
-            //else game over
-            return null;
-        },
-        validateWords: function(wordTotTest1, wordTotTest2){
+        validateWords: function(items){
 
             for(var i = 0, len = items.length; i < len; i++) {
               var word = Dictionnary.findOne({ word:items[i]});
@@ -36,9 +27,6 @@ Meteor.startup(function () {
             }
 
             return true;
-        },
-        restart : function() {
-            alphabet = createGameLetters();
         },
         createRoom: function(name){
             console.info("leaveRoom | name : "+name+", user : " + Meteor.userId());
@@ -58,6 +46,13 @@ Meteor.startup(function () {
             // Init game letters in room
             // Give each player 6 letters
             Room.start(idRoom);
+        },
+        sayMixmo: function(idRoom){
+            console.info("sayMixmo | room "+idRoom);
+            // Check that game is started in room
+            // Check that user has used all letters
+            // Check that all letters are valid
+            Room.handleMixmo(idRoom);
         },
         playerReady: function(idRoom){
             console.info("playerReady | room "+idRoom+", user : " + Meteor.userId());

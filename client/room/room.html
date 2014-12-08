@@ -12,10 +12,10 @@
                         {{#each room.players}}
                             <li>
                                 {{name}}
-                                {{#if ready}} 
+                                {{#if ready}}
                                     pret !
                                     {{else}}
-                                        {{#if me}} 
+                                        {{#if me}}
                                             <button class="readyBtn">Go!</button>
                                         {{else}}
                                             <p>En attente du joueur</p>
@@ -25,23 +25,24 @@
                             </li>
                         {{/each}}
                     </ul>
-                    {{#if canStart}}<button id="startGame">Start !</button>{{/if}}
+                    {{#if canStart}}<button class="action-start-game">Start !</button>{{/if}}
+                    {{#if canMixmo}}<button class="action-do-mixmo">Mixmo !</button>{{/if}}
                 </div>
             </div>
         {{else}}
             <h2 id="roomTitle">Rooms</h2>
                 <ul>
                 {{#each rooms}}
-                    <li>{{name}} - 
+                    <li>{{name}} -
                     {{#if roomOpen}}
-                        <button class="joinBtn">Join</button> 
+                        <button class="joinBtn">Join</button>
                         {{else}}
                         <p>La room est fermée</p>
                     {{/if}}
                     {{#if canDelete}}<button class="removeRoomBtn" id="{{host}}">Remove</button>{{/if}}</li>
                 {{/each}}
                 </ul>
-                <button id="createRoom">Create room</button>
+                <button class="action-create-room">Create room</button>
         {{/if}}
     {{/if}}
     </div>
