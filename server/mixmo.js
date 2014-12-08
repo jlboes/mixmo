@@ -13,21 +13,7 @@ Meteor.startup(function () {
     })
 
     return Meteor.methods({
-        getTwoLetters: function(playerName){
-            // check if pool is not empty
-            // if empty game over else
-            Players.find().forEach(function (player) {
-                // get random letter && remove letter from pool
-
-                if( alphabet.length>1){
-                    //CurrentWord.insert({player: player.login, letter: alphabet.pop(), time: Date.now()});
-                    //CurrentWord.insert({player: player.login, letter: alphabet.pop(), time: Date.now()});
-                }
-            });
-            //else game over
-            return null;
-        },
-        validateWords: function(wordTotTest1, wordTotTest2){
+        validateWords: function(items){
 
             for(var i = 0, len = items.length; i < len; i++) {
               var word = Dictionnary.findOne({ word:items[i]});
@@ -37,9 +23,6 @@ Meteor.startup(function () {
             }
 
             return true;
-        },
-        restart : function() {
-            alphabet = createGameLetters();
         },
         createRoom: function(name){
             console.info("leaveRoom | name : "+name+", user : " + Meteor.userId());
@@ -59,6 +42,13 @@ Meteor.startup(function () {
             // Init game letters in room
             // Give each player 6 letters
             Room.start(idRoom);
+        },
+        sayMixmo: function(idRoom){
+            console.info("sayMixmo | room "+idRoom);
+            // Check that game is started in room
+            // Check that user has used all letters
+            // Check that all letters are valid
+            Room.handleMixmo(idRoom);
         },
         playerReady: function(idRoom){
             console.info("playerReady | room "+idRoom+", user : " + Meteor.userId());

@@ -31,9 +31,25 @@ Template.entryfield.helpers({
         return this.id == Meteor.userId();
     },
     canStart: function(){
-        // Display "Start Game" btn if all players in room are ready AND current user is host
+        // Display "Start Game" btn if the following are met :
+        // - game is not started yet (--> status "closed" ?)
+        // - current user is host
+        // - all players are "ready"
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
-        return (room.host == Meteor.userId()) && (_.where(room.players, { status: "ready"}).length == room.players.length) && room.players.length>1;
+        return room.host == Meteor.userId()
+            && (_.where(room.players, { status: "ready"}).length == room.players.length)
+            && room.players.length > 1
+            && room.status !== ROOM_CLOSED;
+    },
+    canMixmo: function(){
+        // Display "Mixmo !" btn if the following are met :
+        // - game is started (--> status "closed" ?)
+        // - at least one player has used all currentletters
+        var room = Room.getCurrent();
+        //return room.letters.length > 0; // Use Only for testing
+
+        var myletters = room.currentletters[Meteor.userId()];
+        return room.status == ROOM_CLOSED && myletters.length == 0;
     },
     roomOpen: function(){
         return this.status == ROOM_OPEN;
@@ -49,7 +65,7 @@ Template.entryfield.helpers({
 */
 
 Template.entryfield.events({
-    "click #createRoom":function(event){
+    "click .action-create-room":function(event){
 
         bootbox.prompt("What is the name of the room?", function(result) {
           if (result === null || result.trim().length <1) {
@@ -71,9 +87,13 @@ Template.entryfield.events({
         var room = Rooms.findOne({ "players.id" : this.id});
         Meteor.call("leaveRoom", room._id);
     },
-    "click #startGame": function(event){
+    "click .action-start-game": function(event){
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
         Meteor.call("startGame", room._id)
+    },
+    "click .action-do-mixmo": function(event){
+        var room = Rooms.findOne({ "players.id" : Meteor.userId()});
+        Meteor.call("sayMixmo", room._id)
     },
     "click .readyBtn": function(event){
         console.log(this.id);

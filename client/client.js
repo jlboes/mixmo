@@ -1,6 +1,3 @@
-
-Session.setDefault("playerName", "");
-
 /*
 |------------------------------------------------------------------------------
 |   UTILS
@@ -156,16 +153,9 @@ Template.playground.helpers({
     }
 });
 
-
-Template.wordInput.helpers({
-    inGame : function(){
-        return inGame.get();
-    }
-});
-
 Template.playground.rendered = function(){
 
-    if(Meteor.userId()){  // Kind of access control
+    if(Meteor.userId()) {  // Kind of access control
       var tbody = jQuery('tbody');
       var tableSize = 40; // Number of cells in each axis
       for(var i=1; i <= tableSize; i++){
@@ -224,28 +214,6 @@ Template.playground.events({
   }
 });
 
-Template.wordInput.events = {
-    "click #mixmo":function(event){
-        getLetters();
-    },
-    "click #startGame":function(event){
-        if( Players.find({}).count()>=2
-            && !(Session.get("playerName") == 'undefined' || Session.get("playerName") == '')){
-
-            inGame.set(true);
-            for (var i = 0; i < 3; i++) {
-                getLetters();
-            };
-        }
-    },
-    "click #restartGame":function(event){
-        inGame.set(false);
-        Meteor.call('restart', function(err, response) {
-            console.log('game restarted');
-            jQuery(".currentwordTds").remove();
-        });
-    }
-}
 
 Meteor.autorun(function() {
     Meteor.subscribe("letters", Session.get("playerName"));
