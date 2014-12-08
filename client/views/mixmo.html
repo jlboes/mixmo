@@ -29,7 +29,6 @@
       <div class="row center-block">
         <div id="game">
           {{> wordInput}}
-          {{> currentWordTable}}
           {{> playground}}
         </div>
       </div>
@@ -46,8 +45,8 @@
         <button id="mixmo">mixmo !</button>
 </template>
 
+
 <template name="currentWordTable">
-    <div id="availableLetter" class="container">
         <table id="currentWordTable" class="connectedSortable">
             <tr id="currentwordTR"><td>E</td></tr>
             <!--<tr id="currentwordTR">
@@ -56,11 +55,19 @@
                 {{/each}}
             </tr>-->
         </table>
-    </div>
-    <br/>
 </template>
 
 <template name="playground">
+    <div id="availableLetter" class="container">
+      <table id="current-words" >
+        <tr id="current-word-line">
+            {{#each playerletters}}
+            <td class="letter" data-letter="{{value}}">{{value}}</td>
+            {{/each}}
+        </tr>
+      </table>
+        </div>
+    <br/>
   <table id="gridTable">
       <tbody >
       </tbody>

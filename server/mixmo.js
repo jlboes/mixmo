@@ -1,45 +1,9 @@
-function createGameLetters(){
-    /**** Constitution du tableau de lettres ****/
-    // Préparation des lettres
-    var alphabet = "aaaaaaaaaa"
-      +"bbcccdddd"+
-      "eeeeeeeeeeeeeeeee"+
-      "ffggghhhiiiiiiiii"+
-      "jjkllllllmmmnnnnnnn"+
-      "oooooooopppqqrrrrrr"+
-      "ssssssstttttttuuuuuuvvv"+
-      "wxyz**$";
-    // Conversion en tableau
-    alphabet = alphabet.split("");
-    // Mélange les lettres
-    shuffle(alphabet);
-    return alphabet;
-}
-
-
-function shuffle(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
-    return array;
-}
-
-
 Meteor.startup(function () {
 // code to run on server at startup
-    CurrentWord.remove({});
 
     var Dictionnary = new Meteor.Collection('dictionary');
 
-    var alphabet = createGameLetters();
-
-
-    Meteor.publish("letters", function(playerName) {
-        return CurrentWord.find({player: playerName});
-    })
+    var alphabet = Mixmo.initGameLetters();
 
     Meteor.publish("players", function() {
         return Players.find();
@@ -57,68 +21,46 @@ Meteor.startup(function () {
     	    return CurrentWord.remove({});
     	},
         getTwoLetters: function(roomId, player){
-            // check if pool is not empty
-            // if empty game over else
-            /*Players.find().forEach(function (player) {
-                // get random letter && remove letter from pool
-
-                if( alphabet.length>1){
-                    CurrentWord.insert({player: player.login, letter: alphabet.pop(), time: Date.now()});
-                    CurrentWord.insert({player: player.login, letter: alphabet.pop(), time: Date.now()});
-                }
-            });*/
             
             createInfoNotification(roomId, player, player.name+" a fait Mixmo !!");
             //else game over
             return null;
         },
-        isWordValid: function(wordTotTest1, wordTotTest2){
+        validateWords: function(wordTotTest1, wordTotTest2){
 
-            var status = false;
-            if(wordTotTest1.length>1)
-            {
-
-                var doc = Dictionnary.findOne({word:wordTotTest1});
-                if(doc!= undefined)
-                {
-                    status = true;
-                }
-            } else{
-                status = true;
+            for(var i = 0, len = items.length; i < len; i++) {
+              var word = Dictionnary.findOne({ word:items[i]});
+              if(!word){
+                  return false;
+              }
             }
 
-            var status2 = false;
-            if(wordTotTest2.length>1)
-            {
-
-                var doc = Dictionnary.findOne({word:wordTotTest2});
-                if(doc!= undefined)
-                {
-                    status2 = true;
-                }
-            } else{
-                status2 = true;
-            }
-
-            return status && status2;
+            return true;
         },
         restart : function() {
             alphabet = createGameLetters();
         },
         createRoom: function(name){
+            console.info("leaveRoom | name : "+name+", user : " + Meteor.userId());
             Room.createNewRoom(Meteor.userId(), name);
         },
         joinRoom: function(idRoom){
+            console.info("joinRoom | room "+idRoom+", user : " + Meteor.userId());
             Room.joinRoom(Meteor.userId(), idRoom);
         },
         leaveRoom: function(idRoom){
+            console.info("leaveRoom | room "+idRoom+", user : " + Meteor.userId());
             Room.leaveRoom(Meteor.userId(), idRoom);
         },
         startGame: function(idRoom){
-            Rooms.update(idRoom, {$set: {status: ROOM_CLOSED}});
+            console.info("startGame | room "+idRoom);
+            // Close room --> status "closed"
+            // Init game letters in room
+            // Give each player 6 letters
+            Room.start(idRoom);
         },
         playerReady: function(idRoom){
-            console.log("player ready / server");
+            console.info("playerReady | room "+idRoom+", user : " + Meteor.userId());
             Room.playerReady(idRoom, Meteor.userId());
         },
         /** NOTIFICATIONS **/

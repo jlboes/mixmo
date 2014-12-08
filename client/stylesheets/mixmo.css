@@ -34,7 +34,7 @@ td{
     background-color:#C3A799;
 }
 
-#currentWordTable{
+#current-words{
     
 	text-align: center;
 }
@@ -85,3 +85,13 @@ td{
     color:#fff;
 }
 
+
+td.selected {
+  background-color:yellow;
+  color:red;
+}
+
+td[data-letter][data-x][data-y] {
+  background-color:#fff;
+  fort-weight:bold;
+}
