@@ -140,9 +140,8 @@ Template.playground.helpers({
     playerletters : function(){
       var result = [];
       var currentRoom = Room.getCurrent();
-      if(!!currentRoom && currentRoom.me){
-        var me = currentRoom.me;
-        result = me.letters || [];
+      if(currentRoom && currentRoom.currentletters){
+        result = currentRoom.currentletters[Meteor.userId()] || [];
       }
       return result;
     },

@@ -1,39 +1,9 @@
-function createGameLetters(){
-    /**** Constitution du tableau de lettres ****/
-    // Préparation des lettres
-    var alphabet = "aaaaaaaaaa"
-      +"bbcccdddd"+
-      "eeeeeeeeeeeeeeeee"+
-      "ffggghhhiiiiiiiii"+
-      "jjkllllllmmmnnnnnnn"+
-      "oooooooopppqqrrrrrr"+
-      "ssssssstttttttuuuuuuvvv"+
-      "wxyz**$";
-    // Conversion en tableau
-    alphabet = alphabet.split("");
-    // Mélange les lettres
-    shuffle(alphabet);
-    return alphabet;
-}
-
-
-function shuffle(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
-    return array;
-}
-
-
 Meteor.startup(function () {
 // code to run on server at startup
 
     var Dictionnary = new Meteor.Collection('dictionary');
 
-    var alphabet = createGameLetters();
+    var alphabet = Mixmo.initGameLetters();
 
     Meteor.publish("players", function() {
         return Players.find();
@@ -92,29 +62,38 @@ Meteor.startup(function () {
             var mRoom = Rooms.findOne(idRoom);
             var mPlayers = mRoom.players;
             var newPlayers = [];
-            var roomLetters = createGameLetters();
+            var playerLetters = [];
+            var roomletters = Mixmo.initGameLetters();
+            var currentletters = {};
             for(var i=0,len=mPlayers.length; i<len; i++){
-              console.log(" For loop i --> " +i);              
-              var playerLetters = [];
-              for(var j=0;i<chars_per_player;j++){
-                playerLetters.push({value : roomLetters.pop()});
+              var j = chars_per_player;
+              var p = mPlayers[i];
+              var pl = currentletters[p.id] || [];
+              while(j>0)
+              {
+                var l = roomletters.pop();
+                var e = {value : l};
+                pl.push(e);
+                j--;
               }
-              console.log(playerLetters);
-              var player = mPlayers[i];
-              console.log(player);
-              player.myletters = playerLetters;
-              newPlayers.push(player);
+              currentletters[p.id] = pl.slice();
+              console.log(" Player " + p.id+" --> " + p.name);
+              console.log(currentletters[p.id]);
             }
+
+            //*
             Rooms.update(idRoom, {
               $set: {
                 "status"  : ROOM_CLOSED,
-                "letters" : roomLetters,
-                "players" : newPlayers
+                "letters" : roomletters,
+                "currentletters": currentletters
               }
             });
+            //*/
+
         },
         playerReady: function(idRoom){
-            console.info("playerReady | room "+idRoom);
+            console.info("playerReady | room "+idRoom+", user : " + Meteor.userId());
             Room.playerReady(idRoom, Meteor.userId());
         }
     });
