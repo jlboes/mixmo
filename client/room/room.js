@@ -95,7 +95,7 @@ Template.entryfield.events({
     },
     "click .action-do-mixmo": function(event){
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
-        Meteor.call("sayMixmo", room._id)
+        Meteor.call("sayMixmo", room._id, Meteor.userId())
     },
     "click .readyBtn": function(event){
         console.log(this.id);

@@ -47,12 +47,13 @@ Meteor.startup(function () {
             // Give each player 6 letters
             Room.start(idRoom);
         },
-        sayMixmo: function(idRoom){
+        sayMixmo: function(idRoom, idUser){
             console.info("sayMixmo | room "+idRoom);
             // Check that game is started in room
             // Check that user has used all letters
             // Check that all letters are valid
-            Room.handleMixmo(idRoom);
+            
+            Room.handleMixmo(idRoom,idUser);
         },
         addCurrentLetter: function(letter){
             var room = Room.getCurrent();
