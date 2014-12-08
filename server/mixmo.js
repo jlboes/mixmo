@@ -58,39 +58,7 @@ Meteor.startup(function () {
             // Close room --> status "closed"
             // Init game letters in room
             // Give each player 6 letters
-            var chars_per_player = 6; // Number of letters for this time
-            var mRoom = Rooms.findOne(idRoom);
-            var mPlayers = mRoom.players;
-            var newPlayers = [];
-            var playerLetters = [];
-            var roomletters = Mixmo.initGameLetters();
-            var currentletters = {};
-            for(var i=0,len=mPlayers.length; i<len; i++){
-              var j = chars_per_player;
-              var p = mPlayers[i];
-              var pl = currentletters[p.id] || [];
-              while(j>0)
-              {
-                var l = roomletters.pop();
-                var e = {value : l};
-                pl.push(e);
-                j--;
-              }
-              currentletters[p.id] = pl.slice();
-              console.log(" Player " + p.id+" --> " + p.name);
-              console.log(currentletters[p.id]);
-            }
-
-            //*
-            Rooms.update(idRoom, {
-              $set: {
-                "status"  : ROOM_CLOSED,
-                "letters" : roomletters,
-                "currentletters": currentletters
-              }
-            });
-            //*/
-
+            Room.start(idRoom);
         },
         playerReady: function(idRoom){
             console.info("playerReady | room "+idRoom+", user : " + Meteor.userId());
