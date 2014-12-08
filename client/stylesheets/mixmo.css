@@ -10,6 +10,11 @@ td{
     color: #333;
 	background-color: #B8ACA6;
 	text-shadow: 0px 1px 0px rgba(255,255,255,.5); /* 50% white from bottom */
+	
+    font-size: 25px;
+	font-family: "Century Gothic", "Helvetica", sans-serif;
+	font-weight: bold;
+	text-align: center;
 }
 
 .active{
@@ -28,16 +33,11 @@ td{
     border:solid 1px black;
     min-height:25px;
     margin-top:25px;
-    font-size: 25px;
-	font-family: "Century Gothic", "Helvetica", sans-serif;
-	font-weight: bold;
+    
     background-color:#C3A799;
 }
 
-#current-words{
-    
-	text-align: center;
-}
+
 
 /*Container*/
 .notifications{
@@ -93,5 +93,4 @@ td.selected {
 
 td[data-letter][data-x][data-y] {
   background-color:#fff;
-  fort-weight:bold;
 }
