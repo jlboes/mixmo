@@ -47,9 +47,11 @@ Template.entryfield.helpers({
         // - at least one player has used all currentletters
         var room = Room.getCurrent();
         //return room.letters.length > 0; // Use Only for testing
-
-        var myletters = room.currentletters[Meteor.userId()];
-        return room.status == ROOM_CLOSED && myletters.length == 0;
+        if(room && room.currentletters) {
+          var myletters = room.currentletters[Meteor.userId()] || [];
+          return room.status == ROOM_CLOSED && myletters.length == 0;
+        }
+        return false;
     },
     roomOpen: function(){
         return this.status == ROOM_OPEN;

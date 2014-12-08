@@ -187,8 +187,19 @@ Template.playground.events({
         var letter = prev.text();
         el.attr('data-letter', letter).text(letter);
         prev.text('');
+
+        // Letter is removed from user's currentletters
+        if(from_x == '?' && from_y == '?' && to_x != '?' && to_y != '?') {
+          Meteor.call("removeCurrentLetter", letter);
+        }
+
+        // Letter is added to user's currentletters
+        if(from_x != '?' && from_y != '?' && to_x == '?' && to_y == '?') {
+          Meteor.call("addCurrentLetter", letter);
+        }
         console.log('Moved ' + letter + ' : (' +from_x+','+from_y+') --> (' +to_x+','+to_y+')');
       }
+      
       jQuery('td.letter.selected')
         .removeClass('selected')
         .removeAttr('data-letter');
@@ -201,5 +212,5 @@ Meteor.autorun(function() {
     Meteor.subscribe("letters", Session.get("playerName"));
     Meteor.subscribe("players");
     Meteor.subscribe("rooms");
-    Meteor.subscribe('notifications'); 
+    Meteor.subscribe('notifications');
 });

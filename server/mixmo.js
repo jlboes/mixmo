@@ -54,6 +54,20 @@ Meteor.startup(function () {
             // Check that all letters are valid
             Room.handleMixmo(idRoom);
         },
+        addCurrentLetter: function(letter){
+            var room = Room.getCurrent();
+            var idRoom = room._id;
+            console.info("addCurrentLetter | room "+ idRoom+', letter : ' + letter);
+            // Add letter to user's currentletters in game
+            Room.addCurrentLetter(idRoom, letter);
+        },
+        removeCurrentLetter: function(letter){
+            var room = Room.getCurrent();
+            var idRoom = room._id;
+            console.info("removeCurrentLetter | room " + idRoom+', letter : ' + letter);
+            // Remove letter from user's currentletters in game
+            Room.removeCurrentLetter(idRoom, letter);
+        },
         playerReady: function(idRoom){
             console.info("playerReady | room "+idRoom+", user : " + Meteor.userId());
             Room.playerReady(idRoom, Meteor.userId());
