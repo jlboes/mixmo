@@ -140,6 +140,8 @@ Template.playground.rendered = function(){
     if(Meteor.userId()) {  // Kind of access control
       var tbody = jQuery('tbody');
       var tableSize = 40; // Number of cells in each axis
+
+      // 1) Generate grid
       for(var i=1; i <= tableSize; i++){
           var tds = jQuery('<tr>');
           for(var j=1; j <= tableSize; j++){
@@ -152,6 +154,24 @@ Template.playground.rendered = function(){
           }
 
           tbody.append(tds);
+      }
+
+      // 2) Restore letters in grid
+      var mRoom = Rooms.findOne({
+        "players.id" : Meteor.userId(),
+        "status" : ROOM_CLOSED });
+      var cRoom = Room.getCurrent();
+      console.log(mRoom);
+      console.log(cRoom);
+      if(mRoom && mRoom.gridletters) {
+          var playerletters = mRoom.gridletters[Meteor.userId()] || [];
+          for(var i=0, len=playerletters.length; i <= len; i++){
+              var item = playerletters[i];
+              var td = jQuery('td.letter[data-x="'+item.coords.x+'"][data-y="'+item.coords.y+'"]');
+              td.attr('data-letter', item.value.toUpperCase())
+                .attr('title', '('+item.coords.x+','+item.coords.y+')')
+                .text(item.value.toUpperCase());
+          }
       }
     }
 }
@@ -199,7 +219,7 @@ Template.playground.events({
         }
         console.log('Moved ' + letter + ' : (' +from_x+','+from_y+') --> (' +to_x+','+to_y+')');
       }
-      
+
       jQuery('td.letter.selected')
         .removeClass('selected')
         .removeAttr('data-letter');
