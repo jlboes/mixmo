@@ -160,29 +160,23 @@ Template.playground.rendered = function(){
       }
 
       // 2) Restore letters in grid
-      // The following does not work yet
-      // because we can't find a way to retrieve to current room
-      // at this stage.
-      // So any help is appreciated :)
+      this.autorun(function(){
+        console.log("In Template.playground.rendered autorun | userId : " + Meteor.userId());
+        var mRoom = Room.getCurrent();
+        if(mRoom && mRoom.gridletters) {
+            var playerletters = mRoom.gridletters[Meteor.userId()] || [];
+            for(var i=0, len=playerletters.length; i <= len; i++){
+                var item = playerletters[i];
+                if(!!item) {
+                  var td = jQuery('td.letter[data-x="'+item.coords.x+'"][data-y="'+item.coords.y+'"]');
+                  td.attr('data-letter', item.value.toUpperCase())
+                    .attr('title', '('+item.coords.x+','+item.coords.y+')')
+                    .text(item.value.toUpperCase());
+                }
+            }
+        }
+      });
 
-      /*
-      var mRoom = Rooms.findOne({
-        "players.id" : Meteor.userId(),
-        "status" : ROOM_CLOSED });
-      var cRoom = Room.getCurrent();
-
-
-      if(mRoom && mRoom.gridletters) {
-          var playerletters = mRoom.gridletters[Meteor.userId()] || [];
-          for(var i=0, len=playerletters.length; i <= len; i++){
-              var item = playerletters[i];
-              var td = jQuery('td.letter[data-x="'+item.coords.x+'"][data-y="'+item.coords.y+'"]');
-              td.attr('data-letter', item.value.toUpperCase())
-                .attr('title', '('+item.coords.x+','+item.coords.y+')')
-                .text(item.value.toUpperCase());
-          }
-      }
-      //*/
     }
 }
 
