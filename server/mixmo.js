@@ -52,20 +52,20 @@ Meteor.startup(function () {
             // Check that game is started in room
             // Check that user has used all letters
             // Check that all letters are valid
-            
+
             Room.handleMixmo(idRoom,idUser);
         },
         addCurrentLetter: function(letter){
             var room = Room.getCurrent();
             var idRoom = room._id;
-            console.info("addCurrentLetter | room "+ idRoom+', letter : ' + letter);
+            console.info("addCurrentLetter | room "+ idRoom+', letter : ' + letter.value);
             // Add letter to user's currentletters in game
             Room.addCurrentLetter(idRoom, letter);
         },
         removeCurrentLetter: function(letter){
             var room = Room.getCurrent();
             var idRoom = room._id;
-            console.info("removeCurrentLetter | room " + idRoom+', letter : ' + letter);
+            console.info("removeCurrentLetter | room " + idRoom+', letter : ' + letter.value);
             // Remove letter from user's currentletters in game
             Room.removeCurrentLetter(idRoom, letter);
         },

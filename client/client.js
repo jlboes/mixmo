@@ -1,5 +1,8 @@
-
-Session.setDefault("playerName", "");
+Meteor.autorun(function() {
+    Meteor.subscribe("players");
+    Meteor.subscribe("rooms");
+    Meteor.subscribe('notifications');
+});
 
 /*
 |------------------------------------------------------------------------------
@@ -157,12 +160,18 @@ Template.playground.rendered = function(){
       }
 
       // 2) Restore letters in grid
+      // The following does not work yet
+      // because we can't find a way to retrieve to current room
+      // at this stage.
+      // So any help is appreciated :)
+
+      /*
       var mRoom = Rooms.findOne({
         "players.id" : Meteor.userId(),
         "status" : ROOM_CLOSED });
       var cRoom = Room.getCurrent();
-      console.log(mRoom);
-      console.log(cRoom);
+
+
       if(mRoom && mRoom.gridletters) {
           var playerletters = mRoom.gridletters[Meteor.userId()] || [];
           for(var i=0, len=playerletters.length; i <= len; i++){
@@ -173,6 +182,7 @@ Template.playground.rendered = function(){
                 .text(item.value.toUpperCase());
           }
       }
+      //*/
     }
 }
 
@@ -210,12 +220,13 @@ Template.playground.events({
 
         // Letter is removed from user's currentletters
         if(from_x == '?' && from_y == '?' && to_x != '?' && to_y != '?') {
-          Meteor.call("removeCurrentLetter", letter);
+
+          Meteor.call("removeCurrentLetter", {value : letter, coords : { x : to_x, y : to_y}});
         }
 
         // Letter is added to user's currentletters
         if(from_x != '?' && from_y != '?' && to_x == '?' && to_y == '?') {
-          Meteor.call("addCurrentLetter", letter);
+          Meteor.call("addCurrentLetter", {value : letter, coords : { x : from_x, y : from_y}});
         }
         console.log('Moved ' + letter + ' : (' +from_x+','+from_y+') --> (' +to_x+','+to_y+')');
       }
@@ -225,12 +236,4 @@ Template.playground.events({
         .removeAttr('data-letter');
     }
   }
-});
-
-
-Meteor.autorun(function() {
-    Meteor.subscribe("letters", Session.get("playerName"));
-    Meteor.subscribe("players");
-    Meteor.subscribe("rooms");
-    Meteor.subscribe('notifications');
 });
