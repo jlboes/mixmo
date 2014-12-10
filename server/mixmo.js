@@ -52,7 +52,6 @@ Meteor.startup(function () {
             // Check that game is started in room
             // Check that user has used all letters
             // Check that all letters are valid
-
             Room.handleMixmo(idRoom,idUser);
         },
         addCurrentLetter: function(letter){
