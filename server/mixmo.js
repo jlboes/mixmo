@@ -68,6 +68,13 @@ Meteor.startup(function () {
             // Remove letter from user's currentletters in game
             Room.removeCurrentLetter(idRoom, letter);
         },
+        moveGridletter: function(letter, newcoords) {
+          var room = Room.getCurrent();
+          var idRoom = room._id;
+          console.info("moveGridletter | room " + idRoom+', letter : ' + letter.value);
+          // Remove letter from user's currentletters in game
+          Room.moveGridletter(idRoom, letter, newcoords);
+        },
         playerReady: function(idRoom){
             console.info("playerReady | room "+idRoom+", user : " + Meteor.userId());
             Room.playerReady(idRoom, Meteor.userId());

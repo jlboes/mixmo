@@ -135,49 +135,58 @@ Template.playground.helpers({
         result = currentRoom.currentletters[Meteor.userId()] || [];
       }
       return result;
+    },
+    validationStatusClass : function(){
+      var result = "valid";
+      var currentRoom = Room.getCurrent();
+      if(currentRoom && currentRoom.gridletters){
+        var mygridletters = currentRoom.gridletters[Meteor.userId()] || [];
+        if(!Mixmo.isGridValid(mygridletters)){
+          result = "invalid";
+        }
+      }
+      return result;
     }
 });
 
 Template.playground.rendered = function(){
-    if(Meteor.userId()) {  // Kind of access control
-      var tbody = jQuery('tbody');
-      var maxLineCount = Config.playgroundColumnCount;
-      var maxColumnCount = Config.playgroundLineCount;
 
-      // 1) Generate grid
-      for(var i=1; i <= maxLineCount; i++){
-          var tds = jQuery('<tr>');
-          for(var j=1; j <= maxColumnCount; j++){
-              var td = jQuery('<td>')
-                        .addClass('letter')
-                        .attr('data-x', j)
-                        .attr('data-y', i)
-                        .attr('title', '('+j+','+i+')');
-              tds.append(td) ;
-          }
 
-          tbody.append(tds);
-      }
+    var tbody = jQuery('tbody');
+    var maxLineCount = Config.playgroundColumnCount;
+    var maxColumnCount = Config.playgroundLineCount;
 
-      // 2) Restore letters in grid
-      this.autorun(function(){
-        console.log("In Template.playground.rendered autorun | userId : " + Meteor.userId());
-        var mRoom = Room.getCurrent();
-        if(mRoom && mRoom.gridletters) {
-            var playerletters = mRoom.gridletters[Meteor.userId()] || [];
-            for(var i=0, len=playerletters.length; i <= len; i++){
-                var item = playerletters[i];
-                if(!!item) {
-                  var td = jQuery('td.letter[data-x="'+item.coords.x+'"][data-y="'+item.coords.y+'"]');
-                  td.attr('data-letter', item.value.toUpperCase())
-                    .attr('title', '('+item.coords.x+','+item.coords.y+')')
-                    .text(item.value.toUpperCase());
-                }
-            }
+    // 1) Generate grid
+    for(var i=1; i <= maxLineCount; i++){
+        var tds = jQuery('<tr>');
+        for(var j=1; j <= maxColumnCount; j++){
+            var td = jQuery('<td>')
+                      .addClass('letter')
+                      .attr('data-x', j)
+                      .attr('data-y', i)
+                      .attr('title', '('+j+','+i+')');
+            tds.append(td) ;
         }
-      });
 
-    }
+        tbody.append(tds);
+    };
+    this.autorun(function(){
+      // 2) Restore letters in grid
+      console.log("In Template.playground.rendered autorun | userId : " + Meteor.userId());
+      var mRoom = Room.getCurrent();
+      if(mRoom && mRoom.gridletters) {
+          var playerletters = mRoom.gridletters[Meteor.userId()] || [];
+          for(var i=0, len=playerletters.length; i <= len; i++){
+              var item = playerletters[i];
+              if(!!item) {
+                var td = jQuery('td.letter[data-x="'+item.coords.x+'"][data-y="'+item.coords.y+'"]');
+                td.attr('data-letter', item.value.toUpperCase())
+                  .attr('title', '('+item.coords.x+','+item.coords.y+')')
+                  .text(item.value.toUpperCase());
+              }
+          }
+      }
+    });
 }
 
 /*
@@ -223,16 +232,13 @@ Template.playground.events({
         // But wait...this should not happen anymore !
         // Whatever let's keep it here for the moment
         if(from_x != '?' && from_y != '?' && to_x == '?' && to_y == '?') {
-          // Maybe try something like the following to validate neighborhood
-          // --> Meteor.call("ensureEmptySurroundings", { ... }) ?
-          // But it seems weird though...
           Meteor.call("addCurrentLetter", {value : letter, coords : { x : from_x, y : from_y}});
         }
 
         // Letter is moved within the playground
         // "gridletters" --> "gridletters"
         if(from_x != '?' && from_y != '?' && to_x != '?' && to_y != '?') {
-          // Check surroundings of { x : to_x, y : to_y}
+          Meteor.call("moveGridletter", {value : letter, coords : { x : from_x, y : from_y}}, {x:to_x, y:to_y});
         }
 
         console.log('Moved ' + letter + ' : (' +from_x+','+from_y+') --> (' +to_x+','+to_y+')');
@@ -243,29 +249,8 @@ Template.playground.events({
         .removeAttr('data-letter');
 
       // Validation must happen here after the DOM has been updated
-      // The following is still buggy probably due to weird race conditions
-      /* Start method ensureFilledSurroundings
-      if(to_x != '?' && to_y != '?'){
-        var checklist = Mixmo.getSurroundingCoords({value : letter, coords : { x : to_x, y : to_y}});
-        var selectorlist = [];
-        for(var i=0,len=checklist.length;i<len;i++) {
-          var item = checklist[i];
-          selectorlist.push('td.letter[data-letter][data-x="'+item.x+'"][data-y="'+item.y+'"]');
-        }
-
-        var mRoom = Room.getCurrent();
-        var result = jQuery(selectorlist.join(','));
-        var isValid = result.length > 0;
-        // Validate/Invalidate currentRoom
-        if(mRoom) {
-          Rooms.update(
-            { _id: mRoom._id },
-            { $set: { "isvalid" : !!isValid } }
-          );
-        }
-      }
-      // End method ensureFilledSurroundings
-      //*/
+      // mygridletters
+      // Mixmo.isGridValid(mygridletters)
     }
   }
 });
