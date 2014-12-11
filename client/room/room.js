@@ -43,20 +43,29 @@ Template.entryfield.helpers({
             && room.status !== ROOM_CLOSED;
     },
     canMixmo: function(){
+
         // Display "Mixmo !" btn if the following are met :
         // - game is started (--> status "closed" ?)
-        // - at least one player has used all currentletters
+        // - the player has used all currentletters
+        // - player grid is valid (no holes)
+        // - player words are (Dictionnary checked)
         var room = Room.getCurrent();
-        //return room.letters.length > 0; // Use Only for testing
+        var okCurrentletters = false;
+        var okGridletters = true;
+
         if(room && room.currentletters) {
           var myletters = room.currentletters[Meteor.userId()] || [];
-          return room.status == ROOM_CLOSED && myletters.length == 0;
+          okCurrentletters = room.status == ROOM_CLOSED && myletters.length == 0;
         }
-        return false;
+        if(okCurrentletters && room && room.gridletters) {
+          var mygridletters = room.gridletters[Meteor.userId()] || [];
+          okGridletters = !!Mixmo.isGridValid(mygridletters);
+        }
+        return okCurrentletters && okGridletters;
     },
     roomOpen: function(){
         return this.status == ROOM_OPEN;
-    }
+    },
 });
 
 

@@ -16,17 +16,17 @@
                                     pret !
                                     {{else}}
                                         {{#if me}}
-                                            <button class="readyBtn">Go!</button>
+                                            <button class="btn readyBtn">Go!</button>
                                         {{else}}
                                             <p>En attente du joueur</p>
                                         {{/if}}
                                 {{/if}}
-                                {{#if canLeave}}<button class="leaveRoom">Leave the room</button>{{/if}}
+                                {{#if canLeave}}<button class="btn leaveRoom">Leave the room</button>{{/if}}
                             </li>
                         {{/each}}
                     </ul>
-                    {{#if canStart}}<button class="action-start-game">Start !</button>{{/if}}
-                    {{#if canMixmo}}<button class="action-do-mixmo">Mixmo !</button>{{/if}}
+                    {{#if canStart}}<button class="btn action-start-game">Start !</button>{{/if}}
+                    {{#if canMixmo}}<button class="btn action-do-mixmo">Mixmo !</button>{{/if}}
                 </div>
             </div>
         {{else}}
@@ -35,14 +35,14 @@
                 {{#each rooms}}
                     <li>{{name}} -
                     {{#if roomOpen}}
-                        <button class="joinBtn">Join</button>
+                        <button class="btn joinBtn">Join</button>
                         {{else}}
                         <p>La room est fermée</p>
                     {{/if}}
-                    {{#if canDelete}}<button class="removeRoomBtn" id="{{host}}">Remove</button>{{/if}}</li>
+                    {{#if canDelete}}<button class="btn removeRoomBtn" id="{{host}}">Remove</button>{{/if}}</li>
                 {{/each}}
                 </ul>
-                <button class="action-create-room">Create room</button>
+                <button class="btn action-create-room">Create room</button>
         {{/if}}
     {{/if}}
     </div>

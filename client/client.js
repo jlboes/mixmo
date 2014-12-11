@@ -10,9 +10,8 @@ Meteor.autorun(function() {
 |------------------------------------------------------------------------------
 */
 
-function validateGrid(event, ui){
-    var item = $(ui.item);
-    var sender = $(ui.sender);
+function validateGrid(jqel, prev){
+    var item = jqel;
 
     var vWordTds = getVwordTds(item);
     var hWordTds = getHwordTds(item);
@@ -27,8 +26,11 @@ function validateGrid(event, ui){
         hWord = hWord + value.html();
     });
     console.log("vWord : "+vWord);
-
+    console.log("hWord : "+hWord);
     var valid = true;
+    if(!vWord && !hWord){
+      return;
+    }
 
     Meteor.call('validateWords', [hWord, vWord], function(err, response) {
         console.log('is word valid');
@@ -46,9 +48,14 @@ function validateGrid(event, ui){
                 value.addClass('valid');
                 value.removeClass('notValid');
             });
-        }else{
+        } else {
             item.addClass('notValid');
             item.removeClass('valid');
+        }
+
+        if(prev){
+          prev.removeClass('valid')
+              .removeClass('notValid');
         }
     });
 
@@ -63,7 +70,7 @@ function getVwordTds(item){
     var letter = letterTd.html();
 
     var safety = true;
-    var safetyInc = 60;
+    var safetyInc = Config.playgroundColumnCount;
     while((letter!= "" && letter!= undefined) && safety){
         //console.log('html : '+letter);
         vWord.unshift(letterTd);
@@ -85,7 +92,7 @@ function getVwordTds(item){
     letter = letterTd.html();
 
     safety = true;
-    safetyInc = 60;
+    safetyInc = Config.playgroundColumnCount;
     while((letter!= "" && letter!= undefined) && safety){
         vWord.push(letterTd);
 
@@ -242,15 +249,15 @@ Template.playground.events({
         }
 
         console.log('Moved ' + letter + ' : (' +from_x+','+from_y+') --> (' +to_x+','+to_y+')');
+
+        // 1) Validate words nearby the dropped el
+        validateGrid(el, prev);
       }
 
       jQuery('td.letter.selected')
         .removeClass('selected')
         .removeAttr('data-letter');
 
-      // Validation must happen here after the DOM has been updated
-      // mygridletters
-      // Mixmo.isGridValid(mygridletters)
     }
   }
 });

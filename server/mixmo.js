@@ -18,11 +18,15 @@ Meteor.startup(function () {
 
     return Meteor.methods({
         validateWords: function(items){
-
             for(var i = 0, len = items.length; i < len; i++) {
-              var word = Dictionnary.findOne({ word:items[i]});
-              if(!word){
-                  return false;
+              console.log('items['+i+'] : ' + items[i]);
+              var myword = items[i];
+              if(myword.length > 1){
+                var dicword = Dictionnary.findOne({ word: myword.toLowerCase()});
+                if(!dicword){
+                    console.log("Invalid word : " + myword);
+                    return false;
+                }
               }
             }
 
