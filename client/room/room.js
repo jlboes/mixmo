@@ -22,14 +22,14 @@ Template.entryfield.helpers({
         return room;
     },
     canLeave : function (){
-        return Rooms.find({ "players" : { $elemMatch: {id: this.id, status : STATUS_WAITING}}}).count();
+        return Rooms.find({ "players" : { $elemMatch: {id: Meteor.userId(), status : STATUS_WAITING}}}).count();
     },
     ready : function(){
         return Rooms.find({ "players" : { $elemMatch: {id: this.id, status : STATUS_READY}}}).count();
     },
-    me : function(){
+    /*me : function(){
         return this.id == Meteor.userId();
-    },
+    },*/
     canStart: function(){
         // Display "Start Game" btn if the following are met :
         // - game is not started yet (status !== ROOM_CLOSED)
@@ -96,7 +96,7 @@ Template.entryfield.events({
         Meteor.call('joinRoom', this._id);
     },
     "click .leaveRoom":function(event){
-        var room = Rooms.findOne({ "players.id" : this.id});
+        var room = Rooms.findOne({ "players.id" : Meteor.userId()});
         Meteor.call("leaveRoom", room._id);
     },
     "click .action-start-game": function(event){

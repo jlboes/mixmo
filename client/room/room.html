@@ -11,20 +11,21 @@
                     <ul>
                         {{#each room.players}}
                             <li>
-                                {{name}}
+                                {{name}} - 
                                 {{#if ready}}
                                     pret !
                                     {{else}}
-                                        {{#if me}}
-                                            <button class="btn readyBtn">Go!</button>
-                                        {{else}}
-                                            <p>En attente du joueur</p>
-                                        {{/if}}
+                                        En attente du joueur
                                 {{/if}}
-                                {{#if canLeave}}<button class="btn leaveRoom">Leave the room</button>{{/if}}
                             </li>
                         {{/each}}
                     </ul>
+                    <div>
+                        {{#if canLeave}}
+                            <button class="btn readyBtn">Go!</button>
+                            <button class="btn leaveRoom">Leave the room</button>
+                        {{/if}}                
+                    </div>
                     {{#if canStart}}<button class="btn action-start-game">Start !</button>{{/if}}
                     {{#if canMixmo}}<button class="btn action-do-mixmo">Mixmo !</button>{{/if}}
                 </div>

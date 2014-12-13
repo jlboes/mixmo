@@ -80,7 +80,6 @@ Meteor.startup(function () {
           Room.moveGridletter(idRoom, letter, newcoords);
         },
         playerReady: function(idRoom){
-            console.info("playerReady | room "+idRoom+", user : " + Meteor.userId());
             Room.playerReady(idRoom, Meteor.userId());
         },
         /** NOTIFICATIONS **/
