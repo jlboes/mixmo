@@ -83,9 +83,12 @@ Meteor.startup(function () {
             Room.playerReady(idRoom, Meteor.userId());
         },
         /** NOTIFICATIONS **/
-        readNotifications: function(idNotif){
+        readNotifications: function(idNotif, idPlayer){
             console.log(idNotif);
-            Notifications.update(idNotif, {$set: {read: true}});
+            var users =  Notifications.findOne(idNotif).users;
+            console.log(users);
+            users.push(idPlayer);
+            Notifications.update(idNotif, {$set: {users: users}});
         }
     });
 
