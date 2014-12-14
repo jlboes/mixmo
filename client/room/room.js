@@ -34,12 +34,14 @@ Template.entryfield.helpers({
         // Display "Start Game" btn if the following are met :
         // - game is not started yet (status !== ROOM_CLOSED)
         // - current user is host
-        // - there are enough players (count == Config.gamePlayerCount)
+        // - there are enough players (Config.gameMinPlayerCount <=count <= Config.gameMaxPlayerCount)
         // - all players are "ready"
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
+        var nbplayers = room.players.length;
         return room.host == Meteor.userId()
             && (_.where(room.players, { status: "ready"}).length == room.players.length)
-            && room.players.length == Config.gamePlayerCount
+            && Config.gameMinPlayerCount <= nbplayers
+            && nbplayers <= Config.gameMaxPlayerCount
             && room.status !== ROOM_CLOSED;
     },
     canMixmo: function(){
