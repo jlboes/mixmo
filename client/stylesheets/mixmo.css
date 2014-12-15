@@ -50,7 +50,7 @@ td{
 	width:400px;
 	min-height:400px;
 	height:auto;
-	margin-left: 68%;
+    right: 0;
 }
 
 .box h3{
