@@ -46,7 +46,7 @@ Meteor.startup(function () {
         },
         startGame: function(idRoom){
             console.info("startGame | room "+idRoom);
-            // Close room --> status "closed"
+            // Update room status to ROOM_IN_GAME
             // Init game letters in room
             // Give each player 6 letters
             Room.start(idRoom);
