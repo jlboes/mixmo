@@ -3,8 +3,6 @@ Meteor.startup(function () {
 
     var Dictionnary = new Meteor.Collection('dictionary');
 
-    var alphabet = Mixmo.initGameLetters();
-
     Meteor.publish("players", function() {
         return Players.find();
     })
@@ -51,6 +49,12 @@ Meteor.startup(function () {
             // Give each player 6 letters
             Room.start(idRoom);
         },
+        resetGame: function(idRoom){
+          console.info("resetGame | room "+idRoom);
+          // Update room status to ROOM_OPEN
+          // Update players' statuses to STATUS_WAITING
+          Room.reset(idRoom);
+        },
         sayMixmo: function(idRoom, idUser){
             console.info("sayMixmo | room "+idRoom);
             // Check that game is started in room
@@ -84,9 +88,8 @@ Meteor.startup(function () {
         },
         /** NOTIFICATIONS **/
         readNotifications: function(idNotif, idPlayer){
-            console.log(idNotif);
-            var users =  Notifications.findOne(idNotif).users;
-            console.log(users);
+            console.log("readNotifications | idNotif : " +idNotif+", idPlayer : "+idPlayer);
+            var users =  Notifications.findOne(idNotif).users || [];
             users.push(idPlayer);
             Notifications.update(idNotif, {$set: {users: users}});
         }

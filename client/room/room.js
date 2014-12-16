@@ -79,6 +79,18 @@ Template.entryfield.helpers({
     roomOpen: function(){
         return this.status == ROOM_OPEN;
     },
+    canReset: function(){
+      // Alas, this is not an accurate way of doing things
+      // We should always have a room/game context set
+      // So that we check against this particular context
+      var room = Rooms.findOne({
+        "players.id" : Meteor.userId(),
+        host : Meteor.userId(),
+        status : ROOM_CLOSED
+      });
+
+      return !!room;
+    }
 });
 
 
@@ -128,5 +140,13 @@ Template.entryfield.events({
     "click .readyBtn": function(event){
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
         Meteor.call("playerReady", room._id);
+    },
+    "click .action-reset-game": function(event){
+      var userId = Meteor.userId();
+      var room = Rooms.findOne({ "players.id" : userId, host : userId, status : ROOM_CLOSED});
+      if(!room){
+        throw new Meteor.Error("invalid-action", 'Invalid action')
+      }
+      Meteor.call("resetGame", room._id);
     }
 });
