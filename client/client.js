@@ -25,19 +25,19 @@ function validateGrid(jqel, prev){
     jQuery.each(hWordTds, function(index, value){
         hWord = hWord + value.html();
     });
-    console.log("vWord : "+vWord);
-    console.log("hWord : "+hWord);
+    Meteor.log.debug("vWord : "+vWord);
+    Meteor.log.debug("hWord : "+hWord);
     var valid = true;
     if(!vWord && !hWord){
       return;
     }
 
     Meteor.call('validateWords', [hWord, vWord], function(err, response) {
-        console.log('is word valid');
-        console.debug(response);
+        Meteor.log.debug('is word valid');
+        Meteor.log.debug(response);
         valid = response;
 
-        console.log("valid : "+valid);
+        Meteor.log.debug("valid : "+valid);
         if(valid == "true" || valid == true){
             item.removeClass('notValid');
             jQuery.each(vWordTds, function(index, value){
@@ -72,7 +72,7 @@ function getVwordTds(item){
     var safety = true;
     var safetyInc = Config.playgroundColumnCount;
     while((letter!= "" && letter!= undefined) && safety){
-        //console.log('html : '+letter);
+        //Meteor.log.debug('html : '+letter);
         vWord.unshift(letterTd);
 
         prevTr = prevTr.prev('tr');
@@ -80,7 +80,7 @@ function getVwordTds(item){
         letter = letterTd.html();
         safetyInc--;
         if(safetyInc < 0){
-            console.error("safety break 1");
+            Meteor.log.debug("safety break 1");
             safety = false;
         }
     }
@@ -102,7 +102,7 @@ function getVwordTds(item){
 
         safetyInc--;
         if(safetyInc < 0){
-            console.error("safety break 2");
+            Meteor.log.debug("safety break 2");
             safety = false;
         }
     }
@@ -179,7 +179,7 @@ Template.playground.rendered = function(){
     };
     this.autorun(function(){
       // 2) Restore letters in grid
-      console.log("In Template.playground.rendered autorun | userId : " + Meteor.userId());
+      Meteor.log.debug("In Template.playground.rendered autorun | userId : " + Meteor.userId());
       var mRoom = Room.getCurrent();
       if(mRoom && mRoom.gridletters) {
           var playerletters = mRoom.gridletters[Meteor.userId()] || [];
@@ -212,7 +212,7 @@ Template.playground.events({
       // Add class "selected" to element
       jQuery('td.letter.selected').removeClass('selected');
       el.addClass('selected');
-      console.log('Selected ' + lvalue);
+      Meteor.log.debug('Selected ' + lvalue);
     } else {
       // == User has selected a drop target ==
       // Get the previously selected letter
@@ -248,7 +248,7 @@ Template.playground.events({
           Meteor.call("moveGridletter", {value : letter, coords : { x : from_x, y : from_y}}, {x:to_x, y:to_y});
         }
 
-        console.log('Moved ' + letter + ' : (' +from_x+','+from_y+') --> (' +to_x+','+to_y+')');
+        Meteor.log.debug('Moved ' + letter + ' : (' +from_x+','+from_y+') --> (' +to_x+','+to_y+')');
 
         // 1) Validate words nearby the dropped el
         validateGrid(el, prev);
