@@ -24,10 +24,10 @@
                         {{/each}}
                     </ul>
                     <div>
-                        {{#if canLeave}}
+                        {{#unless playerReady}}
                             <button class="btn readyBtn">Go!</button>
+                        {{/unless}}
                             <button class="btn leaveRoom">Leave the room</button>
-                        {{/if}}
                     </div>
                     {{#if canStart}}<button class="btn action-start-game">Start !</button>{{/if}}
                     {{#if canMixmo}}<button class="btn action-do-mixmo">Mixmo !</button>{{/if}}

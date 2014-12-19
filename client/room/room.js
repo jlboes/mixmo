@@ -21,8 +21,11 @@ Template.entryfield.helpers({
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
         return room;
     },
-    canLeave : function (){
-        return Rooms.find({ "players" : { $elemMatch: {id: Meteor.userId(), status : STATUS_WAITING}}}).count();
+    // canLeave : function (){
+    //     return Rooms.find({ "players" : { $elemMatch: {id: Meteor.userId()}}}).count();
+    // },
+    playerReady : function(){
+        return Rooms.find({ "players" : { $elemMatch: {id: Meteor.userId(), status : STATUS_READY}}}).count();
     },
     ready : function(){
         return Rooms.find({ "players" : { $elemMatch: {id: this.id, status : STATUS_READY}}}).count();
