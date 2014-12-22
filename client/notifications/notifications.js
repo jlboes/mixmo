@@ -1,20 +1,12 @@
 Template.notifications.helpers({
   notifications: function() {
-      var room = Rooms.findOne({ "players.id" : Meteor.userId()});
-      if(room){
-/*        return Notifications.find({ "roomId": room._id,
-                          "userId" : { $not: Meteor.userId()}, 
-                          "users": {
-                            $nin : Meteor.userId
-                          }
+      var room = Room.getCurrent();
+      if(room) {
+          return Notifications.find({ "roomId": room._id,
+                          "userId" : { $not: Meteor.userId()},
+                          "users": { $not: Meteor.userId()},
                        });
-*/
-        return Notifications.find({ "roomId": room._id,
-                          "userId" : { $not: Meteor.userId()}, 
-                          "users": { $not: Meteor.userId()}, 
-                       });
-      }
-      else {
+      } else {
           return null;
       }
   }

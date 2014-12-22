@@ -1,6 +1,23 @@
 Meteor.startup(function () {
-// code to run on server at startup
+    /*
+    |------------------------------------------------------------------------------
+    |   INDEXES CONFIGURATIONS FOR MIXMO
+    |------------------------------------------------------------------------------
+    */
+    if(Notifications && _.isFunction(Notifications._ensureIndex)) {
+        try {
+        Notifications._ensureIndex({ "roomId": 1, "userId" : 1});
+      } catch (e) {
+        console.log("Notifications._ensureIndex() | Error : " + e.message);
+      }
+    }
 
+
+    /*
+    |------------------------------------------------------------------------------
+    |   COLLECTIONS AVAILABILITY
+    |------------------------------------------------------------------------------
+    */
     var Dictionnary = new Meteor.Collection('dictionary');
 
     Meteor.publish("players", function() {
@@ -14,6 +31,11 @@ Meteor.startup(function () {
         return Notifications.find();
     });
 
+    /*
+    |------------------------------------------------------------------------------
+    |   MIXMO METEOR METHODS
+    |------------------------------------------------------------------------------
+    */
     return Meteor.methods({
         validateWords: function(items){
             for(var i = 0, len = items.length; i < len; i++) {
