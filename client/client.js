@@ -136,8 +136,12 @@ function getHwordTds(item){
 
 Template.playground.helpers({
     turns : function(){
+        var result = 0;
         var currentRoom = Room.getCurrent();
-        return Math.floor(currentRoom.letters.length / 2 / currentRoom.players.length); // round down if not enough letter to dispatch
+        if(currentRoom && currentRoom.gridletters) {
+          result =  Math.floor(currentRoom.letters.length / 2 / currentRoom.players.length); // round down if not enough letter to dispatch
+        }
+        return result;
     },
     playerletters : function(){
       var result = [];
@@ -223,10 +227,10 @@ Template.playground.events({
       // Transfer data to current target
       // "unselect" other selected cells
       var prev = jQuery('td.letter.selected');
-      var to_x = el.attr('data-x') || '?';
-      var to_y = el.attr('data-y') || '?';
-      var from_x = prev.attr('data-x') || '?';
-      var from_y = prev.attr('data-y') || '?';
+      var to_x = parseInt(el.attr('data-x')) || '?';
+      var to_y = parseInt(el.attr('data-y')) || '?';
+      var from_x = parseInt(prev.attr('data-x')) || '?';
+      var from_y = parseInt(prev.attr('data-y')) || '?';
       if(prev && prev.text()){
         var letter = prev.text();
         el.attr('data-letter', letter).text(letter);
