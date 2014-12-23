@@ -1,4 +1,8 @@
 /* CSS declarations go here */
+body{
+    font-family: "Century Gothic", "Helvetica", sans-serif;
+}
+
 
 table#playergrid.invalid {
   border-style: solid;
@@ -17,7 +21,6 @@ td{
 	text-shadow: 0px 1px 0px rgba(255,255,255,.5); /* 50% white from bottom */
 
     font-size: 25px;
-	font-family: "Century Gothic", "Helvetica", sans-serif;
 	font-weight: bold;
 	text-align: center;
 }
@@ -44,7 +47,9 @@ td{
 
 
 
-/*Container*/
+/***********
+    NOTIFICATIONS
+    *****************/
 .notifications{
     position: absolute;
 	width:400px;
@@ -89,6 +94,35 @@ td{
 .close-thik:hover{
     color:#fff;
 }
+/*************
+    END NOTIFICATIONS
+    ********************/
+
+/***********
+    Game Info
+    *****************/
+.gameInfos{
+    margin-top: 20px;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.bs-callout-info {
+    border-left-color: #5BC0DE !important;
+}
+.bs-callout {
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #EEE;
+    border-left-width: 5px;
+    border-radius: 3px;
+}
+* {
+    /* -webkit-box-sizing: border-box; */
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 
 
 td.selected {

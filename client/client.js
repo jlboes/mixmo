@@ -135,6 +135,10 @@ function getHwordTds(item){
 */
 
 Template.playground.helpers({
+    turns : function(){
+        var currentRoom = Room.getCurrent();
+        return Math.floor(currentRoom.letters.length / 2 / currentRoom.players.length); // round down if not enough letter to dispatch
+    },
     playerletters : function(){
       var result = [];
       var currentRoom = Room.getCurrent();
