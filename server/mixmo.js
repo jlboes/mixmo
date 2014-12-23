@@ -114,6 +114,13 @@ Meteor.startup(function () {
             var users =  Notifications.findOne(idNotif).users || [];
             users.push(idPlayer);
             Notifications.update(idNotif, {$set: {users: users}});
+        },
+        moveGrid: function(idRoom, incr){
+            console.log("update grid")
+            Rooms.update(
+               { _id: idRoom   },
+               { "$inc": { "gridletters.RvuifrgakMKxmW2wJ[0].coords.y": incr} }
+            )
         }
     });
 

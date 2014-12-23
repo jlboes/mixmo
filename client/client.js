@@ -127,6 +127,14 @@ function getHwordTds(item){
     return hWord;
 }
 
+function moveGrid(incr){
+    var room = Room.getCurrent();
+    Meteor.call("moveGrid", room._id, incr);
+    // Rooms.update(
+    //    { _id: room._id   },
+    //    { $inc: { "gridletters."+Meteor.userId()+".coords.x": incr } }
+    // )
+}
 
 /*
 |------------------------------------------------------------------------------
@@ -211,6 +219,9 @@ Template.playground.rendered = function(){
 */
 
 Template.playground.events({
+    'click #btnLeft' : function(event){
+        moveGrid(1);
+    },
   'click td' : function(event){
     var el = jQuery(event.target);
     var lvalue = el.attr('data-letter');
