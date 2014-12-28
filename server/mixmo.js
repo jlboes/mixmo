@@ -115,12 +115,50 @@ Meteor.startup(function () {
             users.push(idPlayer);
             Notifications.update(idNotif, {$set: {users: users}});
         },
-        moveGrid: function(idRoom, incr){
-            console.log("update grid")
-            Rooms.update(
-               { _id: idRoom   },
-               { "$inc": { "gridletters.RvuifrgakMKxmW2wJ[0].coords.y": incr} }
-            )
+        moveGrid: function(idRoom, direction){
+            console.log("moveGrid() | idRoom : "+idRoom+", direction : " + direction);
+            var mRoom = Rooms.findOne(idRoom);
+            if(!mRoom) {
+              return;
+            }
+            
+            // Generate the right mapping function
+            var mapperfunc = function(item, key){ return item; };
+            switch(direction){
+              case 'left':
+                // Decrement coords.x
+                mapperfunc = function(item, key){ var nitem = item; nitem.coords.x--; return nitem; };
+                break;
+              case 'up' :
+                // Decrement coords.y
+                mapperfunc = function(item, key){ var nitem = item; nitem.coords.y--; return nitem; };
+                break;
+              case 'right':
+                // Increment coords.x
+                mapperfunc = function(item, key){ var nitem = item; nitem.coords.x++; return nitem; };
+                break;
+              case 'down':
+                // Increment coords.y
+                mapperfunc = function(item, key){ var nitem = item; nitem.coords.y++; return nitem; };
+                break;
+              default :
+                // We will use the default mapper that does nothing
+                // .. or better just bailout.
+                return;
+            }
+          
+            // Update user's gridletters
+            var myoldgridletters = mRoom.gridletters[Meteor.userId()] || [];
+            var mygridletters = _.map(myoldgridletters, mapperfunc);
+
+            // Finally update room's gridletters
+            var newgridletters = mRoom.gridletters;
+            newgridletters[Meteor.userId()] = mygridletters;
+            Rooms.update(idRoom, {
+              $set: {
+                "gridletters" : newgridletters
+              }
+            });
         }
     });
 

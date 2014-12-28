@@ -71,7 +71,7 @@ function getVwordTds(item){
 
     var safety = true;
     var safetyInc = Config.playgroundColumnCount;
-    while((letter!= "" && letter!= undefined) && safety){
+    while((letter !== '' && letter !== undefined) && safety){
         //console.log('html : '+letter);
         vWord.unshift(letterTd);
 
@@ -93,7 +93,7 @@ function getVwordTds(item){
 
     safety = true;
     safetyInc = Config.playgroundColumnCount;
-    while((letter!= "" && letter!= undefined) && safety){
+    while((letter !== '' && letter !== undefined) && safety){
         vWord.push(letterTd);
 
         nextTr = nextTr.next('tr');
@@ -113,13 +113,13 @@ function getVwordTds(item){
 function getHwordTds(item){
     var hWord = new Array();
     var prevTd = item.prev('td');
-    while(prevTd.html()!=""){
+    while(prevTd.html() !== ''){
          hWord.unshift(prevTd);
         prevTd = prevTd.prev('td');
     }
     hWord.push(item);
     var nextTd = item.next('td');
-    while(nextTd.html()!=""){
+    while(nextTd.html() !== ''){
         hWord.push(nextTd);
         nextTd = nextTd.next('td');
     }
@@ -127,13 +127,28 @@ function getHwordTds(item){
     return hWord;
 }
 
-function moveGrid(incr){
-    var room = Room.getCurrent();
-    Meteor.call("moveGrid", room._id, incr);
-    // Rooms.update(
-    //    { _id: room._id   },
-    //    { $inc: { "gridletters."+Meteor.userId()+".coords.x": incr } }
-    // )
+function checkGridActions() {
+    var canMove = false;
+  
+    var map = {
+      'left' : 'td.letter[data-letter][data-x="1"]',
+      'up' : 'td.letter[data-letter][data-y="1"]',
+      'right' : 'td.letter[data-letter][data-x="'+Config.playgroundColumnCount+'"]',
+      'down' : 'td.letter[data-letter][data-y="'+Config.playgroundLineCount+'"]'
+    };
+    
+    var checker = function(selector, move) {
+        var canMove = jQuery(selector).length === 0;
+        var triggers = jQuery('.action-grid-move[data-direction="'+move+'"]');
+        if(triggers.length) {
+          if(canMove)  {
+            triggers.removeAttr('disabled');
+          } else {
+            triggers.attr('disabled', 'disabled');
+          }
+        }
+    }
+    _.each(map, checker); 
 }
 
 /*
@@ -199,6 +214,9 @@ Template.playground.rendered = function(){
       var mRoom = Room.getCurrent();
       if(mRoom && mRoom.gridletters) {
           var playerletters = mRoom.gridletters[Meteor.userId()] || [];
+          // 1) Clear grid first
+          jQuery('td.letter[data-letter]').removeAttr('data-letter').empty();       
+          // 2) Then fill with values
           for(var i=0, len=playerletters.length; i <= len; i++){
               var item = playerletters[i];
               if(!!item) {
@@ -208,6 +226,9 @@ Template.playground.rendered = function(){
                   .text(item.value.toUpperCase());
               }
           }
+          
+          // Toggle action buttons enabled/disabled state
+          checkGridActions();
       }
     });
 }
@@ -219,9 +240,13 @@ Template.playground.rendered = function(){
 */
 
 Template.playground.events({
-    'click #btnLeft' : function(event){
-        moveGrid(1);
-    },
+  'click .action-grid-move[data-direction]' : function(event){
+    var currentRoom = Room.getCurrent();
+    if(currentRoom) {
+      var direction = event.target.getAttribute('data-direction');
+      Meteor.call("moveGrid", currentRoom._id, direction);
+    }
+  },  
   'click td' : function(event){
     var el = jQuery(event.target);
     var lvalue = el.attr('data-letter');
