@@ -215,7 +215,7 @@ Template.playground.rendered = function(){
       if(mRoom && mRoom.gridletters) {
           var playerletters = mRoom.gridletters[Meteor.userId()] || [];
           // 1) Clear grid first
-          jQuery('td.letter[data-letter]').removeAttr('data-letter').empty();       
+          jQuery('table#playergrid td.letter[data-letter]').removeAttr('data-letter').empty();       
           // 2) Then fill with values
           for(var i=0, len=playerletters.length; i <= len; i++){
               var item = playerletters[i];
