@@ -1,17 +1,4 @@
 Meteor.startup(function () {
-    /*
-    |------------------------------------------------------------------------------
-    |   INDEXES CONFIGURATIONS FOR MIXMO
-    |------------------------------------------------------------------------------
-    */
-    if(Notifications && _.isFunction(Notifications._ensureIndex)) {
-        try {
-        Notifications._ensureIndex({ "roomId": 1, "userId" : 1});
-      } catch (e) {
-        console.log("Notifications._ensureIndex() | Error : " + e.message);
-      }
-    }
-
 
     /*
     |------------------------------------------------------------------------------
@@ -19,7 +6,33 @@ Meteor.startup(function () {
     |------------------------------------------------------------------------------
     */
     var Dictionnary = new Meteor.Collection('dictionary');
+    
+    /*
+    |------------------------------------------------------------------------------
+    |   INDEXES CONFIGURATIONS FOR MIXMO
+    |------------------------------------------------------------------------------
+    */
+    if(Notifications && _.isFunction(Notifications._ensureIndex)) {
+        try {
+            Notifications._ensureIndex({ "roomId": 1, "userId" : 1});
+        } catch (e) {
+            console.log("Notifications._ensureIndex() | Error : " + e.message);
+        }
+    }
+    
+    if(Dictionnary && _.isFunction(Dictionnary._ensureIndex)) {
+        try {
+            Dictionnary._ensureIndex({ "word" : 1}, { "unique" : true });
+        } catch (e) {
+            console.log("Dictionnary._ensureIndex() | Error : " + e.message);
+        }
+    } 
 
+    /*
+    |------------------------------------------------------------------------------
+    |   COLLECTIONS PUBLICATIONS
+    |------------------------------------------------------------------------------
+    */
     Meteor.publish("players", function() {
         return Players.find();
     })
@@ -38,18 +51,14 @@ Meteor.startup(function () {
     */
     return Meteor.methods({
         validateWords: function(items){
-            for(var i = 0, len = items.length; i < len; i++) {
-              console.log('items['+i+'] : ' + items[i]);
-              var myword = items[i];
-              if(myword.length > 1){
-                var dicword = Dictionnary.findOne({ word: myword.toLowerCase()});
-                if(!dicword){
-                    console.log("Invalid word : " + myword);
-                    return false;
+            console.log('In validateWords() | params : ["' + items.join('", "') + '"]');
+            var testlist = _.filter(items, function(val){ return !!val && val.length > 1; });
+            if(testlist) {
+                var isNotInDictionary = function(value) {
+                    return !Dictionnary.findOne({ word: value.toLowerCase()})
                 }
-              }
+                return !_.some(testlist, isNotInDictionary); 
             }
-
             return true;
         },
         createRoom: function(name){

@@ -9,7 +9,6 @@ Meteor.autorun(function() {
 |   UTILS
 |------------------------------------------------------------------------------
 */
-
 function validateGrid(jqel, prev){
     var item = jqel;
 
@@ -32,30 +31,21 @@ function validateGrid(jqel, prev){
       return;
     }
 
-    Meteor.call('validateWords', [hWord, vWord], function(err, response) {
-        console.log('is word valid');
-        console.debug(response);
-        valid = response;
-
-        console.log("valid : "+valid);
+    Meteor.call('validateWords', [hWord, vWord], function(err, valid) {
         if(valid == "true" || valid == true){
             item.removeClass('notValid');
             jQuery.each(vWordTds, function(index, value){
-                value.addClass('valid');
-                value.removeClass('notValid');
+                value.addClass('valid').removeClass('notValid');
             });
             jQuery.each(hWordTds, function(index, value){
-                value.addClass('valid');
-                value.removeClass('notValid');
+                value.addClass('valid').removeClass('notValid');
             });
         } else {
-            item.addClass('notValid');
-            item.removeClass('valid');
+            item.addClass('notValid').removeClass('valid');
         }
 
         if(prev){
-          prev.removeClass('valid')
-              .removeClass('notValid');
+          prev.removeClass('valid').removeClass('notValid');
         }
     });
 
@@ -129,7 +119,7 @@ function getHwordTds(item){
 
 function checkGridActions() {
     var canMove = false;
-  
+
     var map = {
       'left' : 'td.letter[data-letter][data-x="1"]',
       'up' : 'td.letter[data-letter][data-y="1"]',
@@ -189,7 +179,6 @@ Template.playground.helpers({
 
 Template.playground.rendered = function(){
 
-
     var tbody = jQuery('tbody');
     var maxLineCount = Config.playgroundColumnCount;
     var maxColumnCount = Config.playgroundLineCount;
@@ -205,31 +194,36 @@ Template.playground.rendered = function(){
                       .attr('title', '('+j+','+i+')');
             tds.append(td) ;
         }
-
         tbody.append(tds);
     };
+    
     this.autorun(function(){
-      // 2) Restore letters in grid
-      console.log("In Template.playground.rendered autorun | userId : " + Meteor.userId());
-      var mRoom = Room.getCurrent();
-      if(mRoom && mRoom.gridletters) {
-          var playerletters = mRoom.gridletters[Meteor.userId()] || [];
-          // 1) Clear grid first
-          jQuery('table#playergrid td.letter[data-letter]').removeAttr('data-letter').empty();       
-          // 2) Then fill with values
-          for(var i=0, len=playerletters.length; i <= len; i++){
+        // 2) Restore letters in grid
+        console.log("In Template.playground.rendered autorun | userId : " + Meteor.userId());
+        var mRoom = Room.getCurrent();
+        if(mRoom && mRoom.gridletters) {
+            var playerletters = mRoom.gridletters[Meteor.userId()] || [];
+            // 1) Clear grid first
+            jQuery('table#playergrid td.letter[data-letter]')
+                .removeAttr('data-letter')
+                .removeClass('selected')
+                .removeClass('valid')
+                .removeClass('notValid')
+                .empty(); 
+            
+            // 2) Then fill with values
+            for(var i=0, len=playerletters.length; i <= len; i++){
               var item = playerletters[i];
-              if(!!item) {
+              if(!!item){
                 var td = jQuery('td.letter[data-x="'+item.coords.x+'"][data-y="'+item.coords.y+'"]');
                 td.attr('data-letter', item.value.toUpperCase())
                   .attr('title', '('+item.coords.x+','+item.coords.y+')')
                   .text(item.value.toUpperCase());
-              }
-          }
-          
-          // Toggle action buttons enabled/disabled state
-          checkGridActions();
-      }
+                }
+            }
+            // Toggle action buttons enabled/disabled state
+            checkGridActions();
+        }
     });
 }
 
