@@ -6,7 +6,7 @@ Meteor.startup(function () {
     |------------------------------------------------------------------------------
     */
     var Dictionnary = new Meteor.Collection('dictionary');
-    
+
     /*
     |------------------------------------------------------------------------------
     |   INDEXES CONFIGURATIONS FOR MIXMO
@@ -19,14 +19,14 @@ Meteor.startup(function () {
             console.log("Notifications._ensureIndex() | Error : " + e.message);
         }
     }
-    
+
     if(Dictionnary && _.isFunction(Dictionnary._ensureIndex)) {
         try {
             Dictionnary._ensureIndex({ "word" : 1}, { "unique" : true });
         } catch (e) {
             console.log("Dictionnary._ensureIndex() | Error : " + e.message);
         }
-    } 
+    }
 
     /*
     |------------------------------------------------------------------------------
@@ -55,9 +55,9 @@ Meteor.startup(function () {
             var testlist = _.filter(items, function(val){ return !!val && val.length > 1; });
             if(testlist) {
                 var isNotInDictionary = function(value) {
-                    return !Dictionnary.findOne({ word: value.toLowerCase()})
+                    return Dictionnary.find({ word: value.toLowerCase()}).count() === 0;
                 }
-                return !_.some(testlist, isNotInDictionary); 
+                return !_.some(testlist, isNotInDictionary);
             }
             return true;
         },
@@ -127,10 +127,10 @@ Meteor.startup(function () {
         moveGrid: function(idRoom, direction){
             console.log("moveGrid() | idRoom : "+idRoom+", direction : " + direction);
             var mRoom = Rooms.findOne(idRoom);
-            if(!mRoom) {
+            if(!mRoom || !mRoom.gridletters) {
               return;
             }
-            
+
             // Generate the right mapping function
             var mapperfunc = function(item, key){ return item; };
             switch(direction){
@@ -155,7 +155,7 @@ Meteor.startup(function () {
                 // .. or better just bailout.
                 return;
             }
-          
+
             // Update user's gridletters
             var myoldgridletters = mRoom.gridletters[Meteor.userId()] || [];
             var mygridletters = _.map(myoldgridletters, mapperfunc);
