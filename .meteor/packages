@@ -15,3 +15,5 @@ ian:accounts-ui-bootstrap-3
 mizzao:bootboxjs
 meteorhacks:kadira
 
+sanjo:jasmine
+velocity:html-reporter
