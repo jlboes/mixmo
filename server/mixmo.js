@@ -6,6 +6,7 @@ Meteor.startup(function () {
     |------------------------------------------------------------------------------
     */
     var Dictionnary = new Meteor.Collection('dictionary');
+    var wordService = new WordService(Dictionnary)
 
     /*
     |------------------------------------------------------------------------------
@@ -55,9 +56,9 @@ Meteor.startup(function () {
             var testlist = _.filter(items, function(val){ return !!val && val.length > 1; });
             if(testlist) {
                 var isNotInDictionary = function(value) {
-                    return Dictionnary.find({ word: value.toLowerCase()}).count() === 0;
+                    return wordService.validate(value);
                 }
-                return !_.some(testlist, isNotInDictionary);
+                return _.some(testlist, isNotInDictionary);
             }
             return true;
         },
