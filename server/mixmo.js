@@ -53,14 +53,7 @@ Meteor.startup(function () {
     return Meteor.methods({
         validateWords: function(items){
             console.log('In validateWords() | params : ["' + items.join('", "') + '"]');
-            var testlist = _.filter(items, function(val){ return !!val && val.length > 1; });
-            if(testlist) {
-                var isNotInDictionary = function(value) {
-                    return wordService.validate(value);
-                }
-                return _.some(testlist, isNotInDictionary);
-            }
-            return true;
+            return wordService.validateWords(items);
         },
         createRoom: function(name){
             console.info("leaveRoom | name : "+name+", user : " + Meteor.userId());

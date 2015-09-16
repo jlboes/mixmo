@@ -97,4 +97,39 @@ describe("WordService test", function () {
         expect(check_result).not.toBeUndefined();
         expect(check_result).toBe(false);
     });
+
+
+
+    it("check validation for two word", function () {
+        var word1 = "manger";
+        var word2 = "zoo";
+        var words = [word1, word2]
+        var check_result = undefined;
+
+        check_result = this.wordService.validateWords(words);
+        expect(check_result).not.toBeUndefined();
+        expect(check_result).toBe(true);
+    });
+
+    it("check validation for two word with one wrong", function () {
+        var word1 = "manger";
+        var word2 = "dgshjfgsd";
+        var words = [word1, word2]
+        var check_result = undefined;
+
+        check_result = this.wordService.validateWords(words);
+        expect(check_result).not.toBeUndefined();
+        expect(check_result).toBe(false);
+    });
+
+    it("check validation for two word with two wrong", function () {
+        var word1 = "sdfdfhdsjfhhjkshqd";
+        var word2 = "dgshjfgsd";
+        var words = [word1, word2]
+        var check_result = undefined;
+
+        check_result = this.wordService.validateWords(words);
+        expect(check_result).not.toBeUndefined();
+        expect(check_result).toBe(false);
+    });
 });

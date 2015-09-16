@@ -4,6 +4,8 @@ Meteor.autorun(function() {
     Meteor.subscribe('notifications');
 });
 
+var gridService = new GridService();
+
 /*
 |------------------------------------------------------------------------------
 |   UTILS
@@ -12,38 +14,27 @@ Meteor.autorun(function() {
 function validateGrid(jqel, prev){
     var item = jqel;
 
-    var vWordTds = getVwordTds(item);
-    var hWordTds = getHwordTds(item);
+    var vWordTds = gridService.getVwordTds(item);
+    var hWordTds = gridService.getHwordTds(item);
 
-    var vWord = "";
-    var hWord = "";
+    var vWord = gridService.getWord(vWordTds);
+    var hWord = gridService.getWord(hWordTds);
 
-    jQuery.each(vWordTds, function(index, value){
-        vWord = vWord + value.html();
-    });
-    jQuery.each(hWordTds, function(index, value){
-        hWord = hWord + value.html();
-    });
     console.log("vWord : "+vWord);
     console.log("hWord : "+hWord);
+
     var valid = true;
-    if(!vWord && !hWord){
-      return;
-    }
 
     Meteor.call('validateWords', [hWord, vWord], function(err, valid) {
         if(valid == "true" || valid == true){
-            item.removeClass('notValid');
-            jQuery.each(vWordTds, function(index, value){
-                value.addClass('valid').removeClass('notValid');
-            });
-            jQuery.each(hWordTds, function(index, value){
-                value.addClass('valid').removeClass('notValid');
-            });
+            gridService.markValidWord(vWordTds);
+            gridService.markValidWord(hWordTds);
         } else {
-            item.addClass('notValid').removeClass('valid');
+            gridService.markNotValidWord(vWordTds);
+            gridService.markNotValidWord(hWordTds);
         }
 
+        // remove class from previous slot (where the has been moved from)
         if(prev){
           prev.removeClass('valid').removeClass('notValid');
         }
@@ -51,71 +42,6 @@ function validateGrid(jqel, prev){
 
 }
 
-function getVwordTds(item){
-    var vWord = new Array();
-    var cellIndex = item.index();
-
-    var prevTr = item.parent().prev('tr');
-    var letterTd = prevTr.find('td').eq(cellIndex);
-    var letter = letterTd.html();
-
-    var safety = true;
-    var safetyInc = Config.playgroundColumnCount;
-    while((letter !== '' && letter !== undefined) && safety){
-        //console.log('html : '+letter);
-        vWord.unshift(letterTd);
-
-        prevTr = prevTr.prev('tr');
-        letterTd = prevTr.find('td').eq(cellIndex);
-        letter = letterTd.html();
-        safetyInc--;
-        if(safetyInc < 0){
-            console.error("safety break 1");
-            safety = false;
-        }
-    }
-
-    vWord.push(item);
-
-    var nextTr = item.parent().next('tr');
-    letterTd = nextTr.find('td').eq(cellIndex);
-    letter = letterTd.html();
-
-    safety = true;
-    safetyInc = Config.playgroundColumnCount;
-    while((letter !== '' && letter !== undefined) && safety){
-        vWord.push(letterTd);
-
-        nextTr = nextTr.next('tr');
-        letterTd = nextTr.find('td').eq(cellIndex);
-        letter = letterTd.html();
-
-        safetyInc--;
-        if(safetyInc < 0){
-            console.error("safety break 2");
-            safety = false;
-        }
-    }
-
-    return vWord;
-}
-
-function getHwordTds(item){
-    var hWord = new Array();
-    var prevTd = item.prev('td');
-    while(prevTd.html() !== ''){
-         hWord.unshift(prevTd);
-        prevTd = prevTd.prev('td');
-    }
-    hWord.push(item);
-    var nextTd = item.next('td');
-    while(nextTd.html() !== ''){
-        hWord.push(nextTd);
-        nextTd = nextTd.next('td');
-    }
-
-    return hWord;
-}
 
 function checkGridActions() {
     var canMove = false;
@@ -204,13 +130,13 @@ Template.playground.rendered = function(){
         if(mRoom && mRoom.gridletters) {
             var playerletters = mRoom.gridletters[Meteor.userId()] || [];
             // 1) Clear grid first
-            jQuery('table#playergrid td.letter[data-letter]')
-                .removeAttr('data-letter')
-                .removeClass('selected')
-                .removeClass('valid')
-                .removeClass('notValid')
-                .empty(); 
-            
+            //jQuery('table#playergrid td.letter[data-letter]')
+            //    .removeAttr('data-letter')
+            //    .removeClass('selected')
+            //    .removeClass('valid')
+            //    .removeClass('notValid')
+            //    .empty();
+
             // 2) Then fill with values
             for(var i=0, len=playerletters.length; i <= len; i++){
               var item = playerletters[i];
