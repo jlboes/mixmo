@@ -51,6 +51,7 @@ FROM node:latest
 VOLUME /app
 WORKDIR /app
 EXPOSE 3000
+EXPOSE 5050
 
 RUN \
     apt-get update && apt-get install --no-install-recommends -y \
@@ -63,6 +64,6 @@ RUN \
 Run image
 
 ```
-docker run --rm -ti -e "MONGO_URL=mongodb://172.17.42.1:3001/meteor" -e "VELOCITY=1" -e "JASMINE_BROWSER=PhantomJS" -p 3000:3000 -v <path to app>:/app meteor:latest /bin/bash
+docker run --rm -ti -e "MONGO_URL=mongodb://172.17.42.1:3001/meteor" -e "VELOCITY=1" -e "JASMINE_MIRROR_PORT=5050" -e "JASMINE_BROWSER=PhantomJS" -p 3000:3000 -p 5050:5050 -v  <path to app>:/app meteor:latest /bin/bash
 ```
 
