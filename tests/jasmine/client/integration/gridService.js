@@ -80,9 +80,12 @@ describe("GridService tests", function () {
     });
 
     it("Drop a td", function () {
+        // drop selected td => prevTd
+        // to empty td => emptyTd
         testGridService.dropSelectedTd(emptyTd, prevTd);
 
-        var valid = !emptyTd.hasClass(testGridService.getSelectedClass()) && emptyTd.text() == "M" && prevTd.text() == "";
+        var valid = !emptyTd.hasClass(testGridService.getSelectedClass()) && !prevTd.hasClass(testGridService.getSelectedClass())
+                    && emptyTd.text() == "M" && prevTd.text() == "";
 
         expect(valid).not.toBeUndefined();
         expect(valid).toBe(true);

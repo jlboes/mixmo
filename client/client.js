@@ -179,9 +179,10 @@ Template.playground.events({
             gridService.selectTd(el, prev);
         } else {
             // == User has selected a drop target ==
+            var letter = prev.text();
             gridService.dropSelectedTd(el, prev);
 
-            if (prev && prev.text()) {
+            if (letter) {
                 var to_x = parseInt(el.attr('data-x')) || '?';
                 var to_y = parseInt(el.attr('data-y')) || '?';
                 var from_x = parseInt(prev.attr('data-x')) || '?';
