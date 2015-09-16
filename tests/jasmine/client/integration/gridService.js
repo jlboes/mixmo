@@ -2,16 +2,20 @@ describe("GridService tests", function () {
 
     var table;
     var td;
+    var emptyTd;
+    var prevTd;
     var testGridService;
 
     beforeEach(function () {
         // SETUP
         table = jQuery('<table>' +
             '<tr><td></td><td>C</td><td></td></tr>' +
-            '<tr><td>M</td><td id="elem">O</td><td>I</td></tr>' +
+            '<tr><td class="selected">M</td><td id="elem">O</td><td>I</td></tr>' +
             '<tr><td></td><td>L</td><td></td></tr>' +
             '</table>');
         td = table.find('#elem');
+        emptyTd = table.find('td').first();
+        prevTd = table.find('.selected');
 
         testGridService = new GridService();
     });
@@ -61,6 +65,24 @@ describe("GridService tests", function () {
                 return false;
             }
         });
+
+        expect(valid).not.toBeUndefined();
+        expect(valid).toBe(true);
+    });
+
+    it("Select a td", function () {
+        testGridService.selectTd(td, prevTd);
+
+        var valid = !prevTd.hasClass(testGridService.getSelectedClass()) && td.hasClass(testGridService.getSelectedClass());
+
+        expect(valid).not.toBeUndefined();
+        expect(valid).toBe(true);
+    });
+
+    it("Drop a td", function () {
+        testGridService.dropSelectedTd(emptyTd, prevTd);
+
+        var valid = !emptyTd.hasClass(testGridService.getSelectedClass()) && emptyTd.text() == "M" && prevTd.text() == "";
 
         expect(valid).not.toBeUndefined();
         expect(valid).toBe(true);

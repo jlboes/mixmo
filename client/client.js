@@ -166,62 +166,50 @@ Template.playground.events({
       var direction = event.target.getAttribute('data-direction');
       Meteor.call("moveGrid", currentRoom._id, direction);
     }
-  },  
-  'click td' : function(event){
-    var el = jQuery(event.target);
-    var lvalue = el.attr('data-letter');
-    if(lvalue){
-      // == User has selected a letter ==
-      // Remove class 'selected' from all
-      // Add class "selected" to element
-      jQuery('td.letter.selected').removeClass('selected');
-      el.addClass('selected');
-      console.log('Selected ' + lvalue);
-    } else {
-      // == User has selected a drop target ==
-      // Get the previously selected letter
-      // Transfer data to current target
-      // "unselect" other selected cells
-      var prev = jQuery('td.letter.selected');
-      var to_x = parseInt(el.attr('data-x')) || '?';
-      var to_y = parseInt(el.attr('data-y')) || '?';
-      var from_x = parseInt(prev.attr('data-x')) || '?';
-      var from_y = parseInt(prev.attr('data-y')) || '?';
-      if(prev && prev.text()){
-        var letter = prev.text();
-        el.attr('data-letter', letter).text(letter);
-        prev.text('');
+  },
+    'click td': function (event) {
+        //current item
+        var el = jQuery(event.target);
+        var lvalue = el.attr('data-letter');
 
-        // Letter is removed from user's currentletters
-        // "currentletters" --> "gridletters"
-        if(from_x == '?' && from_y == '?' && to_x != '?' && to_y != '?') {
-          Meteor.call("removeCurrentLetter", {value : letter, coords : { x : to_x, y : to_y}});
+        // Get the previously selected letter
+        var prev = jQuery('td.letter.selected');
+
+        if (lvalue) {
+            gridService.selectTd(el, prev);
+        } else {
+            // == User has selected a drop target ==
+            gridService.dropSelectedTd(el, prev);
+
+            if (prev && prev.text()) {
+                var to_x = parseInt(el.attr('data-x')) || '?';
+                var to_y = parseInt(el.attr('data-y')) || '?';
+                var from_x = parseInt(prev.attr('data-x')) || '?';
+                var from_y = parseInt(prev.attr('data-y')) || '?';
+
+                // Letter is removed from user's currentletters
+                // "currentletters" --> "gridletters"
+                if (from_x == '?' && from_y == '?' && to_x != '?' && to_y != '?') {
+                    Meteor.call("removeCurrentLetter", {value: letter, coords: {x: to_x, y: to_y}});
+                }
+
+                // Letter is added to user's currentletters
+                // "gridletters" --> "currentletters"
+                // But wait...this should not happen anymore !
+                // Whatever let's keep it here for the moment
+                if (from_x != '?' && from_y != '?' && to_x == '?' && to_y == '?') {
+                    Meteor.call("addCurrentLetter", {value: letter, coords: {x: from_x, y: from_y}});
+                }
+
+                // Letter is moved within the playground
+                // "gridletters" --> "gridletters"
+                if (from_x != '?' && from_y != '?' && to_x != '?' && to_y != '?') {
+                    Meteor.call("moveGridletter", {value: letter, coords: {x: from_x, y: from_y}}, {x: to_x, y: to_y});
+                }
+
+                // 1) Validate words nearby the dropped el
+                validateGrid(el, prev);
+            }
         }
-
-        // Letter is added to user's currentletters
-        // "gridletters" --> "currentletters"
-        // But wait...this should not happen anymore !
-        // Whatever let's keep it here for the moment
-        if(from_x != '?' && from_y != '?' && to_x == '?' && to_y == '?') {
-          Meteor.call("addCurrentLetter", {value : letter, coords : { x : from_x, y : from_y}});
-        }
-
-        // Letter is moved within the playground
-        // "gridletters" --> "gridletters"
-        if(from_x != '?' && from_y != '?' && to_x != '?' && to_y != '?') {
-          Meteor.call("moveGridletter", {value : letter, coords : { x : from_x, y : from_y}}, {x:to_x, y:to_y});
-        }
-
-        console.log('Moved ' + letter + ' : (' +from_x+','+from_y+') --> (' +to_x+','+to_y+')');
-
-        // 1) Validate words nearby the dropped el
-        validateGrid(el, prev);
-      }
-
-      jQuery('td.letter.selected')
-        .removeClass('selected')
-        .removeAttr('data-letter');
-
-    }
   }
 });
