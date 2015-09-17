@@ -164,6 +164,12 @@ Template.playground.events({
     var currentRoom = Room.getCurrent();
     if(currentRoom) {
       var direction = event.target.getAttribute('data-direction');
+        jQuery('table#playergrid td.letter[data-letter]')
+            .removeAttr('data-letter')
+            .removeClass('selected')
+            .removeClass('valid')
+            .removeClass('notValid')
+            .empty();
       Meteor.call("moveGrid", currentRoom._id, direction);
     }
   },
