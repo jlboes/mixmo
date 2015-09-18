@@ -4,6 +4,8 @@
 |------------------------------------------------------------------------------
 */
 
+var gridService = new GridService();
+
 Template.entryfield.helpers({
     canShowInput : function(){
         return Meteor.userId() == null;
@@ -131,6 +133,7 @@ Template.entryfield.events({
     "click .leaveRoom":function(event){
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
         Meteor.call("leaveRoom", room._id);
+        gridService.clear(jQuery('table#playergrid td.letter[data-letter]'));
     },
     "click .action-start-game": function(event){
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
@@ -151,11 +154,6 @@ Template.entryfield.events({
         throw new Meteor.Error("invalid-action", 'Invalid action')
       }
       Meteor.call("resetGame", room._id);
-        jQuery('table#playergrid td.letter[data-letter]')
-            .removeAttr('data-letter')
-            .removeClass('selected')
-            .removeClass('valid')
-            .removeClass('notValid')
-            .empty();
+        gridService.clear(jQuery('table#playergrid td.letter[data-letter]'));
     }
 });

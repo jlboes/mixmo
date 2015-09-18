@@ -6,7 +6,7 @@ Meteor.autorun(function() {
 
 var gridService = new GridService();
 
-var chatCollection = new Meteor.Collection(); // local only collection for chat messagess
+var chatCollection = new Meteor.Collection(null); // local only collection for chat messagess
 
 /*
 |------------------------------------------------------------------------------
@@ -166,12 +166,7 @@ Template.playground.events({
     var currentRoom = Room.getCurrent();
     if(currentRoom) {
       var direction = event.target.getAttribute('data-direction');
-        jQuery('table#playergrid td.letter[data-letter]')
-            .removeAttr('data-letter')
-            .removeClass('selected')
-            .removeClass('valid')
-            .removeClass('notValid')
-            .empty();
+        gridService.clear(jQuery('table#playergrid td.letter[data-letter]'));
       Meteor.call("moveGrid", currentRoom._id, direction);
     }
   },
@@ -226,8 +221,12 @@ Template.playground.events({
 // assign collection to the `messages` helper in `chatBox` template
 Template.chatBox.helpers({
     "messages": function() {
-        var room = Room.getCurrent();
-        return chatCollection.find({roomId: room._id});
+        if(Meteor.userId() != null && Meteor.userId() != undefined){
+            var roomId = Room.getCurrentRoomId();
+            console.log(Meteor.userId()+" -- "+roomId);
+            console.log(chatCollection.find({"roomId": roomId}));
+            return chatCollection.find({"roomId": roomId});
+        }
     }
 });
 
@@ -248,9 +247,10 @@ Template.chatMessage.helpers({
 Template.chatBox.events({
     "click #send": function() {
         var message = $('#chat-message').val();
-        var room = Room.getCurrent();
+        var roomId = Room.getCurrentRoomId();
+        console.log("roomoId : "+roomId);
         chatCollection.insert({
-            roomId: room._id,
+            roomId: roomId,
             userId: 'me',
             message: message
         });
@@ -262,9 +262,10 @@ Template.chatBox.events({
 });
 
 chatStream.on('chat', function(message) {
-    var room = Room.getCurrent();
+    var roomId = Room.getCurrentRoomId();
+    console.log("roomoId : "+roomId);
     chatCollection.insert({
-        roomId: room._id,
+        roomId: roomId,
         userId: this.userId, //this is the userId of the sender
         subscriptionId: this.subscriptionId, //this is the subscriptionId of the sender
         message: message

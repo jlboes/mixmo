@@ -33,7 +33,7 @@
         {{> notifications}}
       <div class="row center-block">
           <diV>
-              {{> timer}}
+
           </diV>
         <div id="game">
           {{> playground}}
@@ -46,14 +46,17 @@
 </body>
 
 <template name="playground">
-    <div class="gameInfos bs-callout bs-callout-info">
-        <span id="turns">Turns left : {{turns}}</span>
-        <span class="moveBtn">Move the grid : 
+    <div class="gameInfos bs-callout bs-callout-info row">
+        <div id="turns" class="col-md-2">Turns left : {{turns}}</div>
+        <div class="moveBtn col-md-6">Move the grid :
             <button class="btn action-grid-move" data-direction="left">&#8592;</button>
             <button class="btn action-grid-move" data-direction="up">&#8593;</button>
             <button class="btn action-grid-move" data-direction="right">&#8594;</button>
             <button class="btn action-grid-move" data-direction="down">&#8595;</button>
-        </span>
+        </div>
+        <div class="col-md-4">
+            {{> timer}}
+        </div>
     </div>
     <div id="availableLetter">
       <table id="current-words" >

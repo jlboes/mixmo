@@ -1,7 +1,7 @@
 Meteor.startup(function () {
 
 
-    var GAME_ROUND_TIME = 60;
+    var GAME_ROUND_TIME = 180;
     var CLOCK = GAME_ROUND_TIME;
 
     var timeClock = function() {

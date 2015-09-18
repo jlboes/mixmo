@@ -123,9 +123,6 @@ td{
     box-sizing: border-box;
 }
 
-.moveBtn{
-    margin-left: 100px;
-}
 .moveBtn button{
     margin-left: 10px;
     width: 40px;
