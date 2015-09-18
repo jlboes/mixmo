@@ -6,6 +6,8 @@ Meteor.autorun(function() {
 
 var gridService = new GridService();
 
+var chatCollection = new Meteor.Collection(); // local only collection for chat messagess
+
 /*
 |------------------------------------------------------------------------------
 |   UTILS
@@ -219,4 +221,52 @@ Template.playground.events({
             }
         }
   }
+});
+
+// assign collection to the `messages` helper in `chatBox` template
+Template.chatBox.helpers({
+    "messages": function() {
+        var room = Room.getCurrent();
+        return chatCollection.find({roomId: room._id});
+    }
+});
+
+// generate a value for the `user` helper in `chatMessage` template
+Template.chatMessage.helpers({
+    "user": function() {
+        if(this.userId == 'me') {
+            return this.userId;
+        } else if(this.userId) {
+            getUsername(this.userId);
+            return Session.get('user-' + this.userId);
+        } else {
+            return 'anonymous-' + this.subscriptionId;
+        }
+    }
+});
+
+Template.chatBox.events({
+    "click #send": function() {
+        var message = $('#chat-message').val();
+        var room = Room.getCurrent();
+        chatCollection.insert({
+            roomId: room._id,
+            userId: 'me',
+            message: message
+        });
+        $('#chat-message').val('');
+
+        //add the message to the stream
+        chatStream.emit('chat', message);
+    }
+});
+
+chatStream.on('chat', function(message) {
+    var room = Room.getCurrent();
+    chatCollection.insert({
+        roomId: room._id,
+        userId: this.userId, //this is the userId of the sender
+        subscriptionId: this.subscriptionId, //this is the subscriptionId of the sender
+        message: message
+    });
 });

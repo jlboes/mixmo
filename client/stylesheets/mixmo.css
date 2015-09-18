@@ -141,3 +141,18 @@ td.selected {
 td[data-letter][data-x][data-y] {
   background-color:#fff;
 }
+
+/***********
+    Chat
+    *****************/
+#chat-message {
+    width: 100%;
+    height: 35px;
+}
+
+#messages {
+    width: 100%;
+    height: 200px;
+    border: 1px solid rgb(230, 230, 230);
+    margin: 0px 0px 10px 0px;
+}

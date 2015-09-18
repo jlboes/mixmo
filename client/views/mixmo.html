@@ -23,10 +23,18 @@
     </nav>
     <div class="container">
       <div class="row">
-        {{> entryfield}}
+          <div class="col-md-3">
+              {{> entryfield}}
+          </div>
+          <div class="col-md-9">
+              {{> chatBox}}
+          </div>
       </div>
         {{> notifications}}
       <div class="row center-block">
+          <diV>
+              {{> timer}}
+          </diV>
         <div id="game">
           {{> playground}}
         </div>
@@ -61,4 +69,8 @@
       <tbody >
       </tbody>
   </table>
+</template>
+
+<template name="timer">
+    <p>Time left before new letters : {{timer}}</p>
 </template>

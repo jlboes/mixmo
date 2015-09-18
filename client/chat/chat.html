@@ -1,0 +1,19 @@
+<!-- Chat Box with chat messages and the input box -->
+<template name='chatBox'>
+    <div id='messages'>
+        {{#each messages}}
+        {{>chatMessage}}
+        {{/each}}
+    </div>
+    <textarea id='chat-message'></textarea>
+    <div class="pull-right">
+        <button class='btn btn-primary' id='send'>Send Chat</button>
+    </div>
+</template>
+
+<!-- Template for the individual chat message -->
+<template name='chatMessage'>
+    <div>
+        <b>{{user}}:</b> {{message}}
+    </div>
+</template>

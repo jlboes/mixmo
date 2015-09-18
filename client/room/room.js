@@ -151,5 +151,11 @@ Template.entryfield.events({
         throw new Meteor.Error("invalid-action", 'Invalid action')
       }
       Meteor.call("resetGame", room._id);
+        jQuery('table#playergrid td.letter[data-letter]')
+            .removeAttr('data-letter')
+            .removeClass('selected')
+            .removeClass('valid')
+            .removeClass('notValid')
+            .empty();
     }
 });

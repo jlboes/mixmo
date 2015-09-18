@@ -1,5 +1,16 @@
 Meteor.startup(function () {
 
+
+    var GAME_ROUND_TIME = 60;
+    var CLOCK = GAME_ROUND_TIME;
+
+    var timeClock = function() {
+        if (CLOCK > 0) {
+            CLOCK--;
+        }
+    };
+
+    Meteor.setInterval(timeClock, 1000)
     /*
     |------------------------------------------------------------------------------
     |   COLLECTIONS AVAILABILITY
@@ -51,6 +62,9 @@ Meteor.startup(function () {
     |------------------------------------------------------------------------------
     */
     return Meteor.methods({
+        getServerTime: function(){
+          return CLOCK;
+        },
         validateWords: function(items){
             console.log('In validateWords() | params : ["' + items.join('", "') + '"]');
             return wordService.validateWords(items);
@@ -69,6 +83,7 @@ Meteor.startup(function () {
         },
         startGame: function(idRoom){
             console.info("startGame | room "+idRoom);
+            CLOCK = GAME_ROUND_TIME
             // Update room status to ROOM_IN_GAME
             // Init game letters in room
             // Give each player 6 letters
@@ -82,6 +97,7 @@ Meteor.startup(function () {
         },
         sayMixmo: function(idRoom, idUser){
             console.info("sayMixmo | room "+idRoom);
+            CLOCK = GAME_ROUND_TIME
             // Check that game is started in room
             // Check that user has used all letters
             // Check that all letters are valid
