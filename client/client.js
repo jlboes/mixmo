@@ -221,12 +221,7 @@ Template.playground.events({
 // assign collection to the `messages` helper in `chatBox` template
 Template.chatBox.helpers({
     "messages": function() {
-        if(Meteor.userId() != null && Meteor.userId() != undefined){
-            var roomId = Room.getCurrentRoomId();
-            console.log(Meteor.userId()+" -- "+roomId);
-            console.log(chatCollection.find({"roomId": roomId}));
-            return chatCollection.find({"roomId": roomId});
-        }
+        return chatCollection.find();
     }
 });
 
@@ -248,26 +243,23 @@ Template.chatBox.events({
     "click #send": function() {
         var message = $('#chat-message').val();
         var roomId = Room.getCurrentRoomId();
-        console.log("roomoId : "+roomId);
         chatCollection.insert({
-            roomId: roomId,
             userId: 'me',
             message: message
         });
         $('#chat-message').val('');
 
         //add the message to the stream
-        chatStream.emit('chat', message);
+        chatStream.emit('chat', message, roomId);
     }
 });
 
-chatStream.on('chat', function(message) {
-    var roomId = Room.getCurrentRoomId();
-    console.log("roomoId : "+roomId);
-    chatCollection.insert({
-        roomId: roomId,
-        userId: this.userId, //this is the userId of the sender
-        subscriptionId: this.subscriptionId, //this is the subscriptionId of the sender
-        message: message
-    });
+chatStream.on('chat', function(message, toRoom) {
+    if(toRoom == Room.getCurrentRoomId()){
+        chatCollection.insert({
+            userId: this.userId, //this is the userId of the sender
+            subscriptionId: this.subscriptionId, //this is the subscriptionId of the sender
+            message: message
+        });
+    }
 });
