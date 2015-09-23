@@ -271,7 +271,7 @@ Template.chatMessage.helpers({
 });
 
 Template.chatBox.events({
-    "keypress #chat-message" : function(event){
+    "keyup #chat-message" : function(event){
         if(event.keyCode == 13){
              $('#send').trigger("click");
         }

@@ -1,13 +1,17 @@
 <!-- Chat Box with chat messages and the input box -->
 <template name='chatBox'>
-    <div id='messages'>
+    <div id='messages' class="row">
         {{#each messages}}
         {{>chatMessage}}
         {{/each}}
     </div>
-    <textarea id='chat-message'></textarea>
-    <div class="pull-right">
-        <button class='btn btn-primary' id='send'>Send Chat</button>
+    <div class="row">
+        <div class="col-md-10">
+            <textarea id='chat-message'></textarea>
+        </div>
+        <div class="col-md-2">
+            <button class='btn btn-primary sendbtn' id='send'>Send Chat</button>
+        </div>
     </div>
 </template>
 
