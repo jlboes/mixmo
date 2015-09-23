@@ -1,7 +1,7 @@
 Meteor.startup(function () {
 
-
-    var GAME_ROUND_TIME = 180;
+/**
+    var GAME_ROUND_TIME = 300;
     var CLOCK = GAME_ROUND_TIME;
 
     var timeClock = function() {
@@ -11,6 +11,8 @@ Meteor.startup(function () {
     };
 
     Meteor.setInterval(timeClock, 1000)
+*/
+
     /*
     |------------------------------------------------------------------------------
     |   COLLECTIONS AVAILABILITY
@@ -62,42 +64,48 @@ Meteor.startup(function () {
     |------------------------------------------------------------------------------
     */
     return Meteor.methods({
+        /*
         getServerTime: function(){
           return CLOCK;
         },
+        */
+        giveup: function(){
+            var room = Room.getCurrent();
+            var giveupCount = room.giveup;
+            Room.giveupIncr(Meteor.userId(), room._id);
+            giveupCount++;
+            if(giveupCount == room.players.length){
+                Meteor.call("sayMixmo", room._id,null)
+                giveupCount = 0;
+            }
+            return giveupCount;
+        },
         validateWords: function(items){
-            console.log('In validateWords() | params : ["' + items.join('", "') + '"]');
             return wordService.validateWords(items);
         },
         createRoom: function(name){
-            console.info("leaveRoom | name : "+name+", user : " + Meteor.userId());
             Room.createNewRoom(Meteor.userId(), name);
         },
         joinRoom: function(idRoom){
-            console.info("joinRoom | room "+idRoom+", user : " + Meteor.userId());
             Room.joinRoom(Meteor.userId(), idRoom);
         },
         leaveRoom: function(idRoom){
-            console.info("leaveRoom | room "+idRoom+", user : " + Meteor.userId());
             Room.leaveRoom(Meteor.userId(), idRoom);
         },
         startGame: function(idRoom){
-            console.info("startGame | room "+idRoom);
-            CLOCK = GAME_ROUND_TIME
+            // CLOCK = GAME_ROUND_TIME
             // Update room status to ROOM_IN_GAME
             // Init game letters in room
             // Give each player 6 letters
             Room.start(idRoom);
         },
         resetGame: function(idRoom){
-          console.info("resetGame | room "+idRoom);
           // Update room status to ROOM_OPEN
           // Update players' statuses to STATUS_WAITING
           Room.reset(idRoom);
         },
         sayMixmo: function(idRoom, idUser){
-            console.info("sayMixmo | room "+idRoom);
-            CLOCK = GAME_ROUND_TIME
+            //CLOCK = GAME_ROUND_TIME
             // Check that game is started in room
             // Check that user has used all letters
             // Check that all letters are valid
@@ -106,21 +114,18 @@ Meteor.startup(function () {
         addCurrentLetter: function(letter){
             var room = Room.getCurrent();
             var idRoom = room._id;
-            console.info("addCurrentLetter | room "+ idRoom+', letter : ' + letter.value);
             // Add letter to user's currentletters in game
             Room.addCurrentLetter(idRoom, letter);
         },
         removeCurrentLetter: function(letter){
             var room = Room.getCurrent();
             var idRoom = room._id;
-            console.info("removeCurrentLetter | room " + idRoom+', letter : ' + letter.value);
             // Remove letter from user's currentletters in game
             Room.removeCurrentLetter(idRoom, letter);
         },
         moveGridletter: function(letter, newcoords) {
           var room = Room.getCurrent();
           var idRoom = room._id;
-          console.info("moveGridletter | room " + idRoom+', letter : ' + letter.value);
           // Remove letter from user's currentletters in game
           Room.moveGridletter(idRoom, letter, newcoords);
         },
@@ -129,13 +134,11 @@ Meteor.startup(function () {
         },
         /** NOTIFICATIONS **/
         readNotifications: function(idNotif, idPlayer){
-            console.log("readNotifications | idNotif : " +idNotif+", idPlayer : "+idPlayer);
             var users =  Notifications.findOne(idNotif).users || [];
             users.push(idPlayer);
             Notifications.update(idNotif, {$set: {users: users}});
         },
         moveGrid: function(idRoom, direction){
-            console.log("moveGrid() | idRoom : "+idRoom+", direction : " + direction);
             var mRoom = Rooms.findOne(idRoom);
             if(!mRoom || !mRoom.gridletters) {
               return;

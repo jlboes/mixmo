@@ -7,6 +7,7 @@ Meteor.autorun(function() {
 var gridService = new GridService();
 
 var chatCollection = new Meteor.Collection(null); // local only collection for chat messagess
+Session.set("hasGiveup", false);
 
 /*
 |------------------------------------------------------------------------------
@@ -83,6 +84,27 @@ Template.playground.helpers({
           result =  Math.floor(currentRoom.letters.length / 2 / currentRoom.players.length); // round down if not enough letter to dispatch
         }
         return result;
+    },
+    totalPlayers : function(){
+        var currentRoom = Room.getCurrent();
+        if(currentRoom){
+            return currentRoom.players.length;
+        }
+        return 0;
+    },
+    currentGiveup : function () {
+        var result = 0;
+        var currentRoom = Room.getCurrent();
+        if(currentRoom) {
+            result =  currentRoom.giveup;
+        }
+        if(result == 0){
+            Session.set("hasGiveup", false);
+        }
+        return result;
+    },
+    hasNotGiveUp : function(){
+        return !Session.get("hasGiveup");
     },
     playerletters : function(){
       var result = [];
@@ -170,6 +192,10 @@ Template.playground.events({
       Meteor.call("moveGrid", currentRoom._id, direction);
     }
   },
+    'click #give-up' : function(event){
+        Session.set("hasGiveup", true);
+        Meteor.call("giveup");
+    },
     'click td': function (event) {
         //current item
         var el = jQuery(event.target);
@@ -245,6 +271,11 @@ Template.chatMessage.helpers({
 });
 
 Template.chatBox.events({
+    "keypress #chat-message" : function(event){
+        if(event.keyCode == 13){
+             $('#send').trigger("click");
+        }
+    },
     "click #send": function() {
         var message = $('#chat-message').val();
         var roomId = Room.getCurrentRoomId();

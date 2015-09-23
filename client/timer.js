@@ -1,6 +1,8 @@
 /**
  * Created by jl on 18/09/15.
  */
+/**
+
 Meteor.startup(function () {
     setInterval(function () {
         Meteor.call("getServerTime", function (error, result) {
@@ -14,3 +16,5 @@ Template.timer.helpers({
         return Session.get("time");
     }
 });
+
+ */

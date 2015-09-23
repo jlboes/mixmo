@@ -40,7 +40,7 @@
                 {{else}}
                 <div class="bs-callout bs-callout-info" id="mixoIntro">
                     <h4>Wanna play a Mixmo like game ?</h4>
-                    <p>You need to register or loggin by cliking up there in the top right corner</p>
+                    <p>You need to register or loggin by clicking up there in the top right corner</p>
                 </div>
                 {{/if}}
 
@@ -60,15 +60,20 @@
 
 <template name="playground">
     <div class="gameInfos bs-callout bs-callout-info row">
-        <div id="turns" class="col-md-2">Turns left : {{turns}}</div>
+        <div id="turns" class="col-md-3">Turns left : {{turns}}</div>
         <div class="moveBtn col-md-6">Move the grid :
             <button class="btn action-grid-move" data-direction="left">&#8592;</button>
             <button class="btn action-grid-move" data-direction="up">&#8593;</button>
             <button class="btn action-grid-move" data-direction="right">&#8594;</button>
             <button class="btn action-grid-move" data-direction="down">&#8595;</button>
         </div>
-        <div class="col-md-4">
-            {{> timer}}
+        <div class="col-md-3">
+            {{#if hasNotGiveUp}}
+                <button id="give-up" class="btn btn-danger">I'm stuck</button>
+            {{else}}
+                <span></span>
+            {{/if}}
+            <span class="total-giveup">{{currentGiveup}} / {{totalPlayers}}</span>
         </div>
     </div>
     <div id="availableLetter">
