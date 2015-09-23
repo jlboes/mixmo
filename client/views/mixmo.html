@@ -1,49 +1,62 @@
 <head>
+    <script src="//cdn.jsdelivr.net/intro.js/1.1.1/intro.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/intro.js/1.1.1/introjs.min.css">
   <title>mixmo</title>
 </head>
 
 <body>
-     <nav class="navbar navbar-default" role="navigation">
+    <nav class="navbar navbar-default" role="navigation">
         <div class="container">
-          <div class="navbar-header">
-              <a class="navbar-brand" href="#">Mixmo</a>
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-                  <span class="sr-only">Toggle navigation</span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-              </button>
-          </div>
-          <div class="navbar-collapse collapse">
-              <ul class="nav navbar-nav navbar-right">
-                  {{> loginButtons}} <!-- here -->
-              </ul>
-          </div>
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Mixmo</a>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right" data-step="1" data-intro="First register or loggin!">
+                    {{> loginButtons}} <!-- here -->
+                </ul>
+            </div>
         </div>
     </nav>
     <div class="container">
-      <div class="row">
-          <div class="col-md-3">
-              {{> entryfield}}
-          </div>
-          <div class="col-md-9">
-              {{> chatBox}}
-          </div>
-      </div>
-        {{> notifications}}
-      <div class="row center-block">
-          <diV>
-
-          </diV>
-        <div id="game">
-          {{> playground}}
+        <div class="row">
+            <div class="col-md-3">
+                {{> entryfield}}
+            </div>
+            <div class="col-md-9">
+                {{> chatBox}}
+            </div>
         </div>
-      </div>
-      <footer>
+        {{> notifications}}
+        <div class="row center-block">
+            <div id="game" class="col-md-12 text-center">
+                {{#if currentUser}}
+                {{> playground}}
+                {{else}}
+                <div class="bs-callout bs-callout-info" id="mixoIntro">
+                    <h4>Wanna play a Mixmo like game ?</h4>
+                    <p>You need to register or loggin by cliking up there in the top right corner</p>
+                </div>
+                {{/if}}
 
-      </footer>
+            </div>
+        </div>
+        <footer>
+
+        </footer>
     </div>
 </body>
+
+
+
+<template name="intro">
+    <button id="startBtn" class="btn btn-success btn-big">What to do? Click me</button>
+</template>
 
 <template name="playground">
     <div class="gameInfos bs-callout bs-callout-info row">

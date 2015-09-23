@@ -218,6 +218,11 @@ Template.playground.events({
   }
 });
 
+/*
+ |------------------------------------------------------------------------------
+ |   CHAT
+ |------------------------------------------------------------------------------
+ */
 // assign collection to the `messages` helper in `chatBox` template
 Template.chatBox.helpers({
     "messages": function() {
