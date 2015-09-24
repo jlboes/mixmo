@@ -23,9 +23,6 @@ function validateGrid(jqel, prev){
     var vWord = gridService.getWord(vWordTds);
     var hWord = gridService.getWord(hWordTds);
 
-    console.log("vWord : "+vWord);
-    console.log("hWord : "+hWord);
-
     var valid = true;
 
     Meteor.call('validateWords', [hWord, vWord], function(err, valid) {
@@ -149,7 +146,6 @@ Template.playground.rendered = function(){
     
     this.autorun(function(){
         // 2) Restore letters in grid
-        console.log("In Template.playground.rendered autorun | userId : " + Meteor.userId());
         var mRoom = Room.getCurrent();
         if(mRoom && mRoom.gridletters) {
             var playerletters = mRoom.gridletters[Meteor.userId()] || [];
