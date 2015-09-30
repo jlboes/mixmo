@@ -13,8 +13,8 @@ td{
 
     background-color:lightgrey;
     border: solid 1px lightseagreen;
-    width:30px;
-    height:30px;
+    width:27px;
+    height:36px;
 
     color: #333;
 	background-color: #B8ACA6;
@@ -23,6 +23,17 @@ td{
     font-size: 25px;
 	font-weight: bold;
 	text-align: center;
+
+}
+
+#playergrid td:hover{
+  position : absolute;
+  margin-top: -5px;
+  margin-left: -5px;
+  background-color: yellow !important;
+  width:37px;
+  height:47px;
+vertical-align:middle;
 }
 
 .active{
