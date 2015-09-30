@@ -152,6 +152,7 @@ td[data-letter][data-x][data-y] {
     height: 200px;
     border: 1px solid rgb(230, 230, 230);
     margin: 0px 0px 10px 0px;
+    overflow-y: scroll;
 }
 
 #give-up{
