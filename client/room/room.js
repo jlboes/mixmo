@@ -131,9 +131,13 @@ Template.entryfield.events({
         Meteor.call('joinRoom', this._id);
     },
     "click .leaveRoom":function(event){
-        var room = Rooms.findOne({ "players.id" : Meteor.userId()});
-        Meteor.call("leaveRoom", room._id);
-        gridService.clear(jQuery('table#playergrid td.letter[data-letter]'));
+        bootbox.confirm("If you leave, you will not be allowed to get back in", function(result) {
+            if(result){
+                var room = Rooms.findOne({ "players.id" : Meteor.userId()});
+                Meteor.call("leaveRoom", room._id);
+                gridService.clear(jQuery('table#playergrid td.letter[data-letter]'));
+            }
+        });
     },
     "click .action-start-game": function(event){
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
@@ -142,6 +146,9 @@ Template.entryfield.events({
     "click .action-do-mixmo": function(event){
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
         Meteor.call("sayMixmo", room._id, Meteor.userId())
+
+        getUsername(Meteor.userId());
+        chatService.sendMessage(Session.get('user-' + Meteor.userId())+" a fait Mixmo !!", room._id, "GAME ADMIN");
     },
     "click .readyBtn": function(event){
         var room = Rooms.findOne({ "players.id" : Meteor.userId()});
