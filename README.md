@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/jlboes/mixmo.svg?branch=master)](https://travis-ci.org/jlboes/mixmo)
+
+**abandoned**
 
 
 
